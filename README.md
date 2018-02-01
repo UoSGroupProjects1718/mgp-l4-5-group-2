@@ -1,8 +1,14 @@
 # Group 2
 
-James Macleanan
-Kyle Bodin
-Willoughby Axtell 
+James Macleanan   
+
+Kyle Bodin   
+
+Willoughby Axtell   
+
+Daniel Beales   
+
+
 
 
 This is the repository for our group project.
