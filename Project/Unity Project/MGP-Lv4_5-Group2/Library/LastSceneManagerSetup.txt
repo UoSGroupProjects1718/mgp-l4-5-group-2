@@ -1,1 +1,13 @@
-sceneSetups: []
+sceneSetups:
+- path: Assets/Scenes/mainMenu.unity
+  isLoaded: 1
+  isActive: 1
+- path: Assets/Scenes/main.unity
+  isLoaded: 0
+  isActive: 0
+- path: Assets/Scenes/gameover.unity
+  isLoaded: 0
+  isActive: 0
+- path: Assets/Scenes/controls.unity
+  isLoaded: 0
+  isActive: 0
