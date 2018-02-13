@@ -53,14 +53,6 @@ public class playerController : MonoBehaviour {
         CharacterPosition.x = pf_XAxistStartingPosition;
         CharacterPosition.y = pf_YAxisStartingPosition;
         CharacterPosition.z = 0;
-
-       
-
-        
-
-
-        
-
     }
 	
 	// Update is called once per frame
@@ -70,9 +62,9 @@ public class playerController : MonoBehaviour {
         float MainCharacterCurrentPos = MainCharacter.transform.position.x;
         float moveSpeed = pf_HorizontalMoveSpeed * Time.deltaTime;
 
+        
 
-
-        if (MainCharacter.transform.position.x >= 7 && MovingLeft == true)
+        if (MainCharacter.transform.position.x >= 7 || MovingLeft == true)
         {
             moveSpeed = -moveSpeed;
 
@@ -82,16 +74,21 @@ public class playerController : MonoBehaviour {
                 MovingRight = true;
             }
         }
-        else if (MainCharacter.transform.position.x >= -7 && MovingRight == true)
-        {
-            moveSpeed = +moveSpeed;
+        
 
-            if (MovingRight == true)
-            {
-                MovingLeft = true;
-                MovingRight = false;
-            }
-        }
+        //else if (MainCharacter.transform.position.x <= -7 && MovingRight == true)
+        //{
+        //    moveSpeed = +moveSpeed;
+
+        //    if (MovingRight == true)
+        //    {
+        //        MovingLeft = true;
+        //        MovingRight = false;
+        //    }
+        //}
+
+
+
 
         if (b_Stage1)
         {            
