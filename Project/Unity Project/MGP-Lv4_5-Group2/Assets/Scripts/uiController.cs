@@ -68,9 +68,9 @@ public class uiController : MonoBehaviour {
     public void TimerCountdown(float timerStart, float Timer)
     {
 
-        Timer -= 1 * Time.deltaTime;
+        //Timer -= 1 * Time.deltaTime;
 
-        text_CountdownTimer.text = Timer.ToString();
+        //text_CountdownTimer.text = Timer.ToString();
 
 
     }
