@@ -44,9 +44,14 @@ public class playerController : MonoBehaviour {
 
     private Vector3 CharacterPosition;
 
+    private float RotationAngle = 90;
+
+    private bool StartRotationDone = false;
     
 
     Quaternion rotation;
+
+    private float RotationCount;
 
 
     // Use this for initialization
@@ -103,15 +108,23 @@ public class playerController : MonoBehaviour {
         
         if(Input.GetKeyDown(KeyCode.Space))
         {
-            b_Stage1 = false;
-            b_Stage2 = true;
-        }
+            if (b_Stage1 == true)
+            {
+                b_Stage1 = false;
+                b_Stage2 = true;
+            }
+            else if(b_Stage2 == true)
+            {
+                b_Stage2 = false;
+                b_Stage3 = true;    
+            }
 
 
-        while(b_Stage2)
-        {
+
+
             
         }
+        
 
         if (b_Stage1)
         {            
@@ -129,12 +142,56 @@ public class playerController : MonoBehaviour {
             //transform.Rotate(Vector3.left * (rotationSpeed * Time.deltaTime));
 
 
+            if(!StartRotationDone)
+            {
+                rotation = Quaternion.Euler(0, 0, RotationAngle); // this adds a 90 degrees Y rotation
+                transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime);
+                RotationCount++;
+                Debug.Log(RotationCount);
+
+                if(RotationCount == RotationAngle)
+                {
+                    StartRotationDone = true;
+                    RotationAngle = 180;
+                }
 
 
-            //rotation = Quaternion.Euler(0, 0, 90); // this adds a 90 degrees Y rotation
+            }
 
-            //transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime);
+            //if (gameObject.transform.rotation = rotation.z)
+            //{
+            //    StartRotationDone = true;
+            //    RotationAngle = 180;
+            //    return;
+            //}
 
+
+
+
+
+            //while (!StartRotationDone)
+            //{
+                
+            //}
+
+
+
+            
+
+            while (StartRotationDone)
+            {
+
+                rotation = Quaternion.Euler(0, 0, RotationAngle);
+                transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime);
+
+
+
+                if (Input.GetKeyDown(KeyCode.Space))                 
+                {
+                    b_Stage2 = false;
+                    return;
+                }
+            }
 
             //rotation = Quaternion.Euler(0, 0, -180); // this adds a 90 degrees Y rotation
 
