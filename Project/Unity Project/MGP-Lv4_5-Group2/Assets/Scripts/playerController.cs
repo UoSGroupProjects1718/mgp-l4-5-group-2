@@ -37,6 +37,8 @@ public class playerController : MonoBehaviour {
     private bool b_Player1Turn;
     private bool b_Player2Turn;
 
+    private float moveSpeed;
+
     bool MovingLeft = true;
     bool MovingRight = false;
 
@@ -50,45 +52,66 @@ public class playerController : MonoBehaviour {
     // Use this for initialization
     void Start () {
 
+        moveSpeed = pf_HorizontalMoveSpeed * Time.deltaTime;
+
         CharacterPosition.x = pf_XAxistStartingPosition;
         CharacterPosition.y = pf_YAxisStartingPosition;
         CharacterPosition.z = 0;
+       
+
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    void OnCollisionEnter2D(Collision2D col)
+    {
+        if (col.gameObject.tag == "WallBoundry")
+        {
+            Debug.Log("Hit Wall");
+
+        }     
+        
+        if (col.gameObject.name == "Cube")
+        {
+            Debug.Log("We Have Collided");
+            if (moveSpeed > 0) //check the number is above 0 - Moving left
+            {
+                Debug.Log("Move Speed is Moving Left");
+                moveSpeed = -moveSpeed;
+                
+            }
+            else if(moveSpeed < 0)
+            {
+                Debug.Log("Move Speed is Now Moving right");
+                moveSpeed = -moveSpeed;
+            }
+        }
+    }
+
+    //public enum Stages
+    //{
+    //    Stage1,
+    //    Stage2,
+    //    Stage3
+    //}
+
+    // Update is called once per frame
+    void Update () {
 
         
         float MainCharacterCurrentPos = MainCharacter.transform.position.x;
-        float moveSpeed = pf_HorizontalMoveSpeed * Time.deltaTime;
-
         
 
-        if (MainCharacter.transform.position.x >= 7 || MovingLeft == true)
+        
+        if(Input.GetKeyDown(KeyCode.Space))
         {
-            moveSpeed = -moveSpeed;
-
-            if (MovingLeft == true)
-            {
-                MovingLeft = false;
-                MovingRight = true;
-            }
+            b_Stage1 = false;
+            b_Stage2 = true;
         }
-        
-
-        //else if (MainCharacter.transform.position.x <= -7 && MovingRight == true)
-        //{
-        //    moveSpeed = +moveSpeed;
-
-        //    if (MovingRight == true)
-        //    {
-        //        MovingLeft = true;
-        //        MovingRight = false;
-        //    }
-        //}
 
 
-
+        while(b_Stage2)
+        {
+            
+        }
 
         if (b_Stage1)
         {            
@@ -96,12 +119,49 @@ public class playerController : MonoBehaviour {
         }
         else if(b_Stage2)
         {
-            rotation = Quaternion.Euler(0, 90, 0); // this adds a 90 degrees Y rotation
-                                                   //var adjustRotation = transform.rotation.y + rotationAdjust; //<- this is wrong!
-            transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime);
+
+            //Start Rotation
+            //Rotate 90 degrees
+
+            float rotationSpeed = 1;
+
+
+            //transform.Rotate(Vector3.left * (rotationSpeed * Time.deltaTime));
+
+
+
+
+            //rotation = Quaternion.Euler(0, 0, 90); // this adds a 90 degrees Y rotation
+
+            //transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime);
+
+
+            //rotation = Quaternion.Euler(0, 0, -180); // this adds a 90 degrees Y rotation
+
+
+            //Stop
+            //Rotate 180 back
+            //stop
+            //Rotate 180 back
+
+
+
+            //var adjustRotation = transform.rotation.y + rotationAdjust; //<- this is wrong!
+            
         }
         else if(b_Stage3)
         {
+            //Start Animation
+
+            //Get Rotation angle
+
+            //Get Velocity Amount. 
+
+            //Create new Game object
+
+            //Add Velocity and angle to new object. 
+
+            //HAZAR
 
         }
 
