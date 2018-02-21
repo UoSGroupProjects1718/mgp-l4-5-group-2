@@ -18,5 +18,13 @@ public class sceneController : MonoBehaviour {
             {
             SceneManager.LoadScene(1);
         }
+
+
+
+
+
+
+
+
 	}
 }
