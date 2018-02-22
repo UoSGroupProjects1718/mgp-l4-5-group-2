@@ -9,6 +9,7 @@ public class uiController : MonoBehaviour {
     public Text PlayerOneScoreText;
     public Text PlayerTwoScoreText;
     public Text text_CountdownTimer;
+    public Text text_AnimatedText;
 
     public float TimerStartingPoint;
 
