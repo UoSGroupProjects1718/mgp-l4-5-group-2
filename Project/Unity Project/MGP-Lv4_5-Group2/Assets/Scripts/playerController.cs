@@ -44,7 +44,7 @@ public class playerController : MonoBehaviour {
 
     private Vector3 CharacterPosition;
 
-    private float RotationAngle = 90;
+    private float RotationAngle = 180;
 
     private bool StartRotationDone = false;
     
@@ -54,6 +54,15 @@ public class playerController : MonoBehaviour {
     private float RotationCount;
 
 
+    enum RotateDir
+    {
+        left, 
+        right
+    }
+
+    public float speed;
+    RotateDir dir;
+
     // Use this for initialization
     void Start () {
 
@@ -62,7 +71,8 @@ public class playerController : MonoBehaviour {
         CharacterPosition.x = pf_XAxistStartingPosition;
         CharacterPosition.y = pf_YAxisStartingPosition;
         CharacterPosition.z = 0;
-       
+
+        dir = RotateDir.right;
 
     }
 
@@ -117,12 +127,7 @@ public class playerController : MonoBehaviour {
             {
                 b_Stage2 = false;
                 b_Stage3 = true;    
-            }
-
-
-
-
-            
+            }            
         }
         
 
@@ -138,25 +143,60 @@ public class playerController : MonoBehaviour {
 
             float rotationSpeed = 1;
 
+            float step = speed * Time.deltaTime;
+
+            // If we're rotating left
+            if (dir == RotateDir.left)
+            {
+                Debug.Log("Rotating Left");
+                // Rotate to the left
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, step);
+                //transform.rotation = Quaternion.Slerp(transform.rotation, rotation, step);
+               
+
+                // If we reach min angle, rotate right
+                if (transform.localRotation.z == -90)
+                {
+                    dir = RotateDir.right;
+                }
+            }
+            // Else if we're rotating to the right
+            else if (dir == RotateDir.right)
+            {
+                Debug.Log("Rotating Right");
+                // Rotate to the right
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, step);
+                //transform.rotation = Quaternion.Slerp(transform.rotation, rotation, step);
+
+                // If we reach max angle, rotate left
+                if (transform.localRotation.z == 90)
+                {
+                    dir = RotateDir.left;
+                }
+            }
+            
+
+
+
 
             //transform.Rotate(Vector3.left * (rotationSpeed * Time.deltaTime));
 
 
-            if(!StartRotationDone)
-            {
-                rotation = Quaternion.Euler(0, 0, RotationAngle); // this adds a 90 degrees Y rotation
-                transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime);
-                RotationCount++;
-                Debug.Log(RotationCount);
+            //if(!StartRotationDone)
+            //{
+            //    rotation = Quaternion.Euler(0, 0, RotationAngle); // this adds a 90 degrees Y rotation
+            //    transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime);
+            //    RotationCount++;
+            //    Debug.Log(RotationCount);
 
-                if(RotationCount == RotationAngle)
-                {
-                    StartRotationDone = true;
-                    RotationAngle = 180;
-                }
+            //    if(RotationCount == RotationAngle)
+            //    {
+            //        StartRotationDone = true;
+            //        RotationAngle = 180;
+            //    }
 
 
-            }
+            //}
 
             //if (gameObject.transform.rotation = rotation.z)
             //{
@@ -171,12 +211,12 @@ public class playerController : MonoBehaviour {
 
             //while (!StartRotationDone)
             //{
-                
+
             //}
 
 
 
-            
+
 
             while (StartRotationDone)
             {

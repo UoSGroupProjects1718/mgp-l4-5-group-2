@@ -28,7 +28,7 @@ public class levelController : MonoBehaviour {
 
         if (GameCamera.transform.position.y <= LevelCameraIncrement)
         {
-            GameCamera.transform.Translate(0, (CameraMovementSpeed * Time.deltaTime), 0, Space.World);
+            //GameCamera.transform.Translate(0, (CameraMovementSpeed * Time.deltaTime), 0, Space.World);
            // LevelCameraIncrement = LevelCameraIncrement * 2; //For the next level
 
         }
