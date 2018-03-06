@@ -6,7 +6,10 @@ public class playerController : MonoBehaviour {
     /// <Public Variables>
     /// - functions that anyone can access, PRogram, Editor, third party sources etc.
     /// </Public Variables>
-    
+
+    BeeController beeController;
+
+    public GameObject GameCamera;
 
     public float pf_HorizontalMoveSpeed = 10;              //Movement Speed for the horizontal directional axis.
     public float pf_RotationSpeed = 10;                    //Movement speed for the rotation of the character.
@@ -18,16 +21,18 @@ public class playerController : MonoBehaviour {
     public float pf_XAxistStartingPosition = 0;
     public GameObject MainCharacter;
 
+
     
-    public Transform PlayerOneBEE;
 
     public Rigidbody2D playerOneBEE;
-    
+    public GameObject playerOneBee;
+
+
     public float BeeFlyingSpeed = 9;
 
 
     public float RotationSpeed;
-
+    
 
 
     /// <Private Variables>
@@ -69,8 +74,12 @@ public class playerController : MonoBehaviour {
     private bool IsPlayerBouncing;
 
     private Rigidbody2D rb;
-    
 
+    public float CameraMovementSpeed;
+    
+    public float LevelCameraIncrement;
+
+    bool nextLevel;
 
     enum RotateDir
     {
@@ -89,7 +98,7 @@ public class playerController : MonoBehaviour {
     CurrentPlayer currentPlayer;
 
     // Use this for initialization
-    void Start () {
+   public  void Start () {
 
         moveSpeed = pf_HorizontalMoveSpeed * Time.deltaTime;
 
@@ -98,6 +107,10 @@ public class playerController : MonoBehaviour {
         CharacterPosition.z = 0;
 
         dir = RotateDir.right;
+
+        // beeController = GetComponent<BeeController>();
+        //BeeController beeController = new BeeController();
+        
 
     }
 
@@ -134,7 +147,7 @@ public class playerController : MonoBehaviour {
         }
         else if (b_Stage3 == true)
         {
-
+           
         }
     }
 
@@ -167,6 +180,29 @@ public class playerController : MonoBehaviour {
         }
     }
 
+    void BeeLaunch()
+    {
+        if (!IsPlayerBouncing)
+        {
+            rb = GetComponent<Rigidbody2D>();
+
+            Vector3 startPos = transform.position;
+            Quaternion shotAngle = transform.rotation;
+
+           MainCharacter.transform.Translate(0, -0.5F, 0);
+
+            float shotAngleFloat = shotAngle.z;
+            Vector3 dir = Quaternion.AngleAxis(shotAngleFloat, Vector3.up) * startPos;
+            var angle = (shotAngleFloat * 100);
+            var player = Instantiate(playerOneBEE, startPos, Quaternion.identity);
+            var shootDir = Quaternion.Euler(0, 0, angle) * Vector3.up;
+            player.GetComponent<Rigidbody2D>().velocity = shootDir * BeeFlyingSpeed;
+
+            IsPlayerBouncing = true;
+        }
+
+    }
+
     void PlayersTurnSwitch()
     {
         if(b_Player1Turn == true)
@@ -179,6 +215,40 @@ public class playerController : MonoBehaviour {
             b_Player1Turn = true;
             b_Player2Turn = false;
         }
+    }
+
+    void MovePlayertoNextLevel()
+    {
+        float NewMainCharacterPosition = 6.2f;
+        while (MainCharacter.transform.position.y <= NewMainCharacterPosition)
+        {
+            MainCharacter.transform.Translate(0, moveSpeed, 0, Space.World);
+            //MainCharacter.transform.Translate(0, 0.5F, 0);
+            MainCharacter.transform.SetPositionAndRotation(MainCharacter.transform.position, Quaternion.Euler(0,0,0));            
+        }
+        b_Stage3 = false;
+        b_Stage1 = true;
+
+        StartRotationDone = false;
+        IsPlayerBouncing = false;
+    }
+
+    void MovetoNextLevel()
+    {
+        while (nextLevel == true)
+        {
+            GameCamera.transform.Translate(0, (CameraMovementSpeed * Time.deltaTime), 0, Space.World);
+
+            if (GameCamera.transform.position.y >= LevelCameraIncrement)
+            {
+                nextLevel = false;
+                MovePlayertoNextLevel();
+
+                return;
+                //  LevelCameraIncrement = LevelCameraIncrement * 2; //For the next level
+            }
+        }
+
     }
 
     // Update is called once per frame
@@ -210,8 +280,7 @@ public class playerController : MonoBehaviour {
             /////////
             // - Rotation Stage of the Game
             ////////
-
-
+            
             RotateCharacterLoop();
 
             
@@ -231,30 +300,29 @@ public class playerController : MonoBehaviour {
             /////////
             // Player Firing Stage
             ////////
-
-            if (!IsPlayerBouncing)
-                
-            {
-                rb = GetComponent<Rigidbody2D>();
-
-                
-                Vector3 startPos = transform.position;
-                Quaternion shotAngle = transform.rotation;
-
-                MainCharacter.transform.Translate(5, 0, 0);                
-
-                float shotAngleFloat = shotAngle.z;              
-                Vector3 dir = Quaternion.AngleAxis(shotAngleFloat, Vector3.up) * startPos;   
-                var angle = (shotAngleFloat * 100);
-                var player = Instantiate(playerOneBEE, startPos, Quaternion.identity);
-                var shootDir = Quaternion.Euler(0, 0, angle) * Vector3.up;
-                player.GetComponent<Rigidbody2D>().velocity = shootDir * BeeFlyingSpeed;
-
-                IsPlayerBouncing = true;
-            }
-
+            BeeLaunch();           
         }
 
+
+
+        if (b_Stage3 && IsPlayerBouncing)
+        {
+
+
+            
+
+          
+        }
+
+
+
+        if(Input.GetKeyDown(KeyCode.L))
+        {
+            nextLevel = true;
+            MovetoNextLevel();            
+        }
+        
+        
 
     }
 }
