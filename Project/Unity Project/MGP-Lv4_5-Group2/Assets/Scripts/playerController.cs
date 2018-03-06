@@ -199,8 +199,9 @@ public class playerController : MonoBehaviour {
             player.GetComponent<Rigidbody2D>().velocity = shootDir * BeeFlyingSpeed;
 
             IsPlayerBouncing = true;
+            
         }
-
+        b_Stage3 = false;
     }
 
     void PlayersTurnSwitch()
@@ -219,7 +220,8 @@ public class playerController : MonoBehaviour {
 
     void MovePlayertoNextLevel()
     {
-        float NewMainCharacterPosition = 6.2f;
+
+        float NewMainCharacterPosition = MainCharacter.transform.position.y + 10.7f;
         while (MainCharacter.transform.position.y <= NewMainCharacterPosition)
         {
             MainCharacter.transform.Translate(0, moveSpeed, 0, Space.World);
@@ -227,6 +229,7 @@ public class playerController : MonoBehaviour {
             MainCharacter.transform.SetPositionAndRotation(MainCharacter.transform.position, Quaternion.Euler(0,0,0));            
         }
         b_Stage3 = false;
+        b_Stage2 = false;
         b_Stage1 = true;
 
         StartRotationDone = false;
@@ -237,6 +240,7 @@ public class playerController : MonoBehaviour {
     {
         while (nextLevel == true)
         {
+            Debug.Log("While Loop");
             GameCamera.transform.Translate(0, (CameraMovementSpeed * Time.deltaTime), 0, Space.World);
 
             if (GameCamera.transform.position.y >= LevelCameraIncrement)
@@ -244,6 +248,7 @@ public class playerController : MonoBehaviour {
                 nextLevel = false;
                 MovePlayertoNextLevel();
 
+                LevelCameraIncrement = LevelCameraIncrement + LevelCameraIncrement;
                 return;
                 //  LevelCameraIncrement = LevelCameraIncrement * 2; //For the next level
             }
@@ -263,8 +268,12 @@ public class playerController : MonoBehaviour {
         {
             TruthTable();
         }
-        
 
+        
+            
+         
+            
+        
         //Main Stage Loop
 
         if (b_Stage1)
@@ -307,16 +316,21 @@ public class playerController : MonoBehaviour {
 
         if (b_Stage3 && IsPlayerBouncing)
         {
-
-
             
-
-          
         }
 
+        if (!b_Stage1)
+        {
+            if (!b_Stage2)
+            {
+                if (!b_Stage3)
+                {
+                    MovetoNextLevel();
+                }
+            }
+        }
 
-
-        if(Input.GetKeyDown(KeyCode.L))
+        if (Input.GetKeyDown(KeyCode.L))
         {
             nextLevel = true;
             MovetoNextLevel();            
