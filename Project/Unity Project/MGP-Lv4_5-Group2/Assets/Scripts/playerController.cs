@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class playerController : MonoBehaviour {
-
-    //Public Variables - functions that anyone can access, PRogram, Editor, third party sources etc.
+    /// <Public Variables>
+    /// - functions that anyone can access, PRogram, Editor, third party sources etc.
+    /// </Public Variables>
+    
 
     public float pf_HorizontalMoveSpeed = 10;              //Movement Speed for the horizontal directional axis.
     public float pf_RotationSpeed = 10;                    //Movement speed for the rotation of the character.
@@ -16,20 +18,28 @@ public class playerController : MonoBehaviour {
     public float pf_XAxistStartingPosition = 0;
     public GameObject MainCharacter;
 
-
-    public Rigidbody playerOneBee;
-    public Rigidbody playerTwoBee;
+    
     public Transform PlayerOneBEE;
 
-    //Private Variables - Functions only the inside of the program/code can access
+    public Rigidbody2D playerOneBEE;
+    
+    public float BeeFlyingSpeed = 9;
 
 
-    private float f_StartingRotation = 90;
+    public float RotationSpeed;
+
+
+
+    /// <Private Variables>
+    ///  - Functions only the inside of the program/code can access
+    /// </Private Variables>
+    
+
+        
 
     private float f_xAxisPosition;
     private float f_yAxisPositon;
-
-    private float f_currentRotation;
+    
    
 
     private int i_Player1Points;
@@ -49,16 +59,17 @@ public class playerController : MonoBehaviour {
 
     private Vector3 CharacterPosition;
 
-    private float RotationAngle = 180;
+    private float RotationAngle = 90;
+    private float RotationMovementChunk = 1;
+    
+
 
     private bool StartRotationDone = false;
 
-    private Rigidbody rb;
+    private bool IsPlayerBouncing;
+
+    private Rigidbody2D rb;
     
-
-    Quaternion rotation;
-
-    private float RotationCount;
 
 
     enum RotateDir
@@ -134,7 +145,26 @@ public class playerController : MonoBehaviour {
 
     void RotateCharacterLoop()
     {
+        float TargetRotation = 90.0f;
+        
+        if (!StartRotationDone)
+        {
 
+            float angle = transform.rotation.eulerAngles.z;
+
+            transform.rotation = Quaternion.Euler(0, 0, RotationMovementChunk * ((RotationSpeed * 5) * Time.time));
+
+            
+           if (angle >= TargetRotation)
+            {
+                print("We hit our target rotation");
+                StartRotationDone = true;
+            }           
+        }
+        else
+        {
+            transform.rotation = Quaternion.Euler(0f, 0f, RotationAngle * Mathf.Sin((RotationSpeed / 10) * Time.time));
+        }
     }
 
     void PlayersTurnSwitch()
@@ -169,132 +199,62 @@ public class playerController : MonoBehaviour {
 
         if (b_Stage1)
         {
+            //////////
+            // - Horizontal Movment Stage
+            /////////
+            
             MoveCharacterLoop();
         }
         else if(b_Stage2)
         {
-
-            //Start Rotation
-            //Rotate 90 degrees
-
-            float rotationSpeed = 1;
-
-            float step = speed * Time.deltaTime;
-
-            // If we're rotating left
-            if (dir == RotateDir.left)
-            {
-                Debug.Log("Rotating Left");
-                // Rotate to the left
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, step);
-                //transform.rotation = Quaternion.Slerp(transform.rotation, rotation, step);
-               
-
-                // If we reach min angle, rotate right
-                if (transform.localRotation.z == -90)
-                {
-                    dir = RotateDir.right;
-                }
-            }
-            // Else if we're rotating to the right
-            else if (dir == RotateDir.right)
-            {
-                Debug.Log("Rotating Right");
-                // Rotate to the right
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, step);
-                //transform.rotation = Quaternion.Slerp(transform.rotation, rotation, step);
-
-                // If we reach max angle, rotate left
-                if (transform.localRotation.z == 90)
-                {
-                    dir = RotateDir.left;
-                }
-            }
-            
+            /////////
+            // - Rotation Stage of the Game
+            ////////
 
 
-
-
-            //transform.Rotate(Vector3.left * (rotationSpeed * Time.deltaTime));
-
-
-            //if(!StartRotationDone)
-            //{
-            //    rotation = Quaternion.Euler(0, 0, RotationAngle); // this adds a 90 degrees Y rotation
-            //    transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime);
-            //    RotationCount++;
-            //    Debug.Log(RotationCount);
-
-            //    if(RotationCount == RotationAngle)
-            //    {
-            //        StartRotationDone = true;
-            //        RotationAngle = 180;
-            //    }
-
-
-            //}
+            RotateCharacterLoop();
 
             
-
-            while (StartRotationDone)
+            if (Input.GetKeyDown(KeyCode.Space))
             {
-
-                rotation = Quaternion.Euler(0, 0, RotationAngle);
-                transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime);
-
-
-
-                if (Input.GetKeyDown(KeyCode.Space))                 
+                if(StartRotationDone)
                 {
                     b_Stage2 = false;
                     return;
-                }
-            }
-
-            //rotation = Quaternion.Euler(0, 0, -180); // this adds a 90 degrees Y rotation
-
-
-            //Stop
-            //Rotate 180 back
-            //stop
-            //Rotate 180 back
-
-
-
-            //var adjustRotation = transform.rotation.y + rotationAdjust; //<- this is wrong!
-            
+                }                
+            }                                
         }
-        else if(b_Stage3)
+
+
+        if(Input.GetKeyDown(KeyCode.Space) && b_Stage3)
         {
-            
-            rb = GetComponent<Rigidbody>();
-            var speed = 10000000;
+            /////////
+            // Player Firing Stage
+            ////////
 
-            for (int i = 0; i < 1; i++)
-            {                
-            // the starting conditions (the position and angle of the 'gun' object)
-            Vector3 startPos = transform.position;
-            Quaternion shotAngle = transform.rotation;
-            // create the projectile object
-            Transform bullet = (Transform)Instantiate(PlayerOneBEE, startPos, shotAngle);
-            // apply the firing force
+            if (!IsPlayerBouncing)
+                
+            {
+                rb = GetComponent<Rigidbody2D>();
 
-            rb.AddForce(transform.forward * speed, ForceMode.Impulse);
+                
+                Vector3 startPos = transform.position;
+                Quaternion shotAngle = transform.rotation;
+
+                MainCharacter.transform.Translate(5, 0, 0);                
+
+                float shotAngleFloat = shotAngle.z;              
+                Vector3 dir = Quaternion.AngleAxis(shotAngleFloat, Vector3.up) * startPos;   
+                var angle = (shotAngleFloat * 100);
+                var player = Instantiate(playerOneBEE, startPos, Quaternion.identity);
+                var shootDir = Quaternion.Euler(0, 0, angle) * Vector3.up;
+                player.GetComponent<Rigidbody2D>().velocity = shootDir * BeeFlyingSpeed;
+
+                IsPlayerBouncing = true;
             }
 
-            //Start Animation
-
-            //Get Rotation angle
-
-            //Get Velocity Amount. 
-
-            //Create new Game object
-
-            //Add Velocity and angle to new object. 
-
-            //HAZAR
-
         }
+
 
     }
 }
