@@ -8,78 +8,72 @@ public class playerController : MonoBehaviour {
     /// </Public Variables>
 
     BeeController beeController;
+    uiController UIControl;
+
 
     public GameObject GameCamera;
+    public Rigidbody2D playerOneBEE;
+    public GameObject playerOneBee;
+    public GameObject MainCharacter;
+    public Animator ShootAnimation;
+
+
 
     public float pf_HorizontalMoveSpeed = 10;              //Movement Speed for the horizontal directional axis.
     public float pf_RotationSpeed = 10;                    //Movement speed for the rotation of the character.
     public float pf_FlyingSpeed = 10;                       //Characters movment when flying
-
     public float pf_HorizonatalEndPosition; 
-
     public float pf_YAxisStartingPosition = -2;                  //How high we wwant the character starting
-    public float pf_XAxistStartingPosition = 0;
-    public GameObject MainCharacter;
-
-
-    
-
-    public Rigidbody2D playerOneBEE;
-    public GameObject playerOneBee;
-
-
+    public float pf_XAxistStartingPosition = 0;  
     public float BeeFlyingSpeed = 9;
-
-
     public float RotationSpeed;
-    
+    public float speed;
+    public int PlayerCount;
+
+
+    public bool LaunchingAnimationFinished;
+
+
 
 
     /// <Private Variables>
     ///  - Functions only the inside of the program/code can access
     /// </Private Variables>
-    
 
-        
+    private Vector3 CharacterPosition;
+    private Rigidbody2D rb;
 
     private float f_xAxisPosition;
     private float f_yAxisPositon;
-    
-   
+    private float moveSpeed;
+    private float RotationAngle = 90;
+    private float RotationMovementChunk = 1;
+    public float CameraMovementSpeed;
+    public float LevelCameraIncrement;
 
+    
     private int i_Player1Points;
     private int i_Player2Points;
 
     private bool b_Stage1 = true;                                  //Horizontal Sliding Stage - Stage 1
     private bool b_Stage2;                                  //Rotational Stage - Stage 2
     private bool b_Stage3;                                  //Power Stage - stage 3
-
     private bool b_Player1Turn;
     private bool b_Player2Turn;
+    private bool b_Player3Turn;
+    private bool b_Player4Turn;
+    private bool StartRotationDone = false;
+    private bool IsPlayerBouncing;
 
-    private float moveSpeed;
 
     bool MovingLeft = true;
     bool MovingRight = false;
-
-    private Vector3 CharacterPosition;
-
-    private float RotationAngle = 90;
-    private float RotationMovementChunk = 1;
-    
-
-
-    private bool StartRotationDone = false;
-
-    private bool IsPlayerBouncing;
-
-    private Rigidbody2D rb;
-
-    public float CameraMovementSpeed;
-    
-    public float LevelCameraIncrement;
-
     bool nextLevel;
+
+    public CurrentPlayer currentPlayer;
+
+    public string CurrentPlayerString;
+
 
     enum RotateDir
     {
@@ -87,30 +81,47 @@ public class playerController : MonoBehaviour {
         right
     }
 
-    enum CurrentPlayer
+    public enum CurrentPlayer
     {
         playerOne, 
-        playerTwo
+        playerTwo, 
+        playerThree, 
+        playerFour
     }
 
-    public float speed;
+    IEnumerator StartAnimationSequence()
+    {
+
+        //Start animation
+        ShootAnimation.SetTrigger("BeeLaunch");
+
+
+        yield return new WaitForSeconds(2000000f);
+
+    }
+
     RotateDir dir;
-    CurrentPlayer currentPlayer;
+   
 
     // Use this for initialization
    public  void Start () {
 
         moveSpeed = pf_HorizontalMoveSpeed * Time.deltaTime;
-
         CharacterPosition.x = pf_XAxistStartingPosition;
         CharacterPosition.y = pf_YAxisStartingPosition;
         CharacterPosition.z = 0;
-
         dir = RotateDir.right;
+        currentPlayer = CurrentPlayer.playerOne;
 
-        // beeController = GetComponent<BeeController>();
-        //BeeController beeController = new BeeController();
-        
+        UIControl = GameObject.Find("UiGameObjectController").GetComponent<uiController>();
+
+        CurrentPlayerString = "Player One";
+
+    }
+
+    void BackToDefaults()
+    {
+        currentPlayer = CurrentPlayer.playerOne;
 
     }
 
@@ -180,8 +191,11 @@ public class playerController : MonoBehaviour {
         }
     }
 
+  
     void BeeLaunch()
-    {
+    {            
+        StartCoroutine(StartAnimationSequence()); //Trying to get the code to stop to allow the animation to run first.              
+               
         if (!IsPlayerBouncing)
         {
             rb = GetComponent<Rigidbody2D>();
@@ -189,7 +203,7 @@ public class playerController : MonoBehaviour {
             Vector3 startPos = transform.position;
             Quaternion shotAngle = transform.rotation;
 
-           MainCharacter.transform.Translate(0, -0.5F, 0);
+           //MainCharacter.transform.Translate(0, -0.5F, 0);
 
             float shotAngleFloat = shotAngle.z;
             Vector3 dir = Quaternion.AngleAxis(shotAngleFloat, Vector3.up) * startPos;
@@ -204,18 +218,64 @@ public class playerController : MonoBehaviour {
         b_Stage3 = false;
     }
 
-    void PlayersTurnSwitch()
-    {
-        if(b_Player1Turn == true)
+    public void PlayersTurnSwitch()
+    {        
+        if (PlayerCount == 2)
         {
-            b_Player2Turn = true;
-            b_Player1Turn = false;
+            switch (currentPlayer)
+            {
+                case CurrentPlayer.playerOne:
+                    currentPlayer = CurrentPlayer.playerTwo;
+                    return;
+            }
         }
-        else
+        else if(PlayerCount == 3)
         {
-            b_Player1Turn = true;
-            b_Player2Turn = false;
+            switch (currentPlayer)
+            {
+                case CurrentPlayer.playerOne:
+                    currentPlayer = CurrentPlayer.playerTwo;
+                    return;
+                case CurrentPlayer.playerTwo:
+                    currentPlayer = CurrentPlayer.playerThree;
+                    return;
+            }
         }
+        else if(PlayerCount == 4)
+        {
+            switch (currentPlayer)
+            {
+                case CurrentPlayer.playerOne:
+                    currentPlayer = CurrentPlayer.playerTwo;
+                    return;
+                case CurrentPlayer.playerTwo:
+                    currentPlayer = CurrentPlayer.playerThree;
+                    return;
+                case CurrentPlayer.playerThree:
+                    currentPlayer = CurrentPlayer.playerFour;
+                    return;
+            }
+        }
+        switch (currentPlayer)
+        {
+            case CurrentPlayer.playerOne:
+                b_Player2Turn = true;
+                b_Player1Turn = false;
+                CurrentPlayerString = "Player Two";
+                return;
+            case CurrentPlayer.playerTwo:
+                b_Player2Turn = false;
+                b_Player3Turn = true;
+                CurrentPlayerString = "Player Three";
+                return;
+            case CurrentPlayer.playerThree:
+                b_Player3Turn = false;
+                b_Player4Turn = true;
+                CurrentPlayerString = "Player Four";
+                return;
+        }    
+        
+        UIControl.NewPlayerAnimation(CurrentPlayerString);
     }
 
     void MovePlayertoNextLevel()
@@ -268,11 +328,7 @@ public class playerController : MonoBehaviour {
         {
             TruthTable();
         }
-
         
-            
-         
-            
         
         //Main Stage Loop
 
@@ -334,9 +390,6 @@ public class playerController : MonoBehaviour {
         {
             nextLevel = true;
             MovetoNextLevel();            
-        }
-        
-        
-
+        }     
     }
 }

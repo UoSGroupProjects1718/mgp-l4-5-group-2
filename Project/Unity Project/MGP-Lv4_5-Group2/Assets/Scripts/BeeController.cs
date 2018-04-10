@@ -8,11 +8,13 @@ public class BeeController : MonoBehaviour {
     public bool EndLevel;
 
     //public GameObject AnimatedText;
-   // public Text prefabText;
+    // public Text prefabText;
 
 
 
+    private uiController UIControl;
     private levelController LevelScript;
+    private playerController PlayerController;
 
     void Awake()
     {
@@ -23,8 +25,9 @@ public class BeeController : MonoBehaviour {
     // Use this for initialization
     void Start () {
 
-       // prefabText = prefabText.GetComponent<Text>();
-
+        // prefabText = prefabText.GetComponent<Text>();
+        UIControl = GameObject.Find("UiGameObjectController").GetComponent<uiController>();
+        PlayerController = GameObject.Find("Character").GetComponent<playerController>();
 
     }
 
@@ -48,7 +51,7 @@ public class BeeController : MonoBehaviour {
 
         if (EndLevel == true)
         {
-                       
+            PlayerController.PlayersTurnSwitch();
         }
 
 

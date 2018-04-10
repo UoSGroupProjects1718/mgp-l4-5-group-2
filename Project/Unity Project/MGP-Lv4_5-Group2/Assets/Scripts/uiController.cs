@@ -11,6 +11,9 @@ public class uiController : MonoBehaviour {
     public Text text_CountdownTimer;
     public Text text_AnimatedText;
 
+    public Text PlayerAnimatedText;
+
+
     public float TimerStartingPoint;
 
     private float f_PlayeroneScore;
@@ -22,6 +25,7 @@ public class uiController : MonoBehaviour {
     
     private float Timer;
 
+    private string AnimatedTextFiller;
 
 
     private bool HasRun;
@@ -29,7 +33,8 @@ public class uiController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        
+
+        PlayeranimatedTextFilling();
 
         if (HasRun == true)
         {         
@@ -43,6 +48,7 @@ public class uiController : MonoBehaviour {
         }
         else
         {
+            StartingPlayerTextAnimation();
             PlayerOneScoreText.text = scoreBaseText + f_PlayeroneScore;
             PlayerTwoScoreText.text = scoreBaseText + f_PlayerTwoScore;
         }
@@ -74,6 +80,21 @@ public class uiController : MonoBehaviour {
         //text_CountdownTimer.text = Timer.ToString();
 
 
+    }
+
+    public void PlayeranimatedTextFilling()
+    {
+        AnimatedTextFiller = "'s Turn!";
+    }
+
+    public void StartingPlayerTextAnimation()
+    {
+        PlayerAnimatedText.text = "Player One" + AnimatedTextFiller;
+    }
+
+    public void NewPlayerAnimation(string CurrentPlayer)
+    {
+        PlayerAnimatedText.text = CurrentPlayer + AnimatedTextFiller;
     }
 
 }
