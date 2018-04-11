@@ -218,8 +218,15 @@ public class playerController : MonoBehaviour {
         b_Stage3 = false;
     }
 
+    void PlayerReset()
+    {
+        //This is where i will reset all player stuffs. 
+    }
+
+
     public void PlayersTurnSwitch()
-    {        
+    {
+        print("Player Turn Switch");
         if (PlayerCount == 2)
         {
             switch (currentPlayer)
@@ -276,6 +283,8 @@ public class playerController : MonoBehaviour {
         }    
         
         UIControl.NewPlayerAnimation(CurrentPlayerString);
+        PlayerReset();
+
     }
 
     void MovePlayertoNextLevel()
