@@ -12,7 +12,14 @@ public class playerController : MonoBehaviour {
 
 
     public GameObject GameCamera;
+    public Rigidbody2D FlyingBeeObject;
+
     public Rigidbody2D playerOneBEE;
+    public Rigidbody2D playerTwoBEE;
+    public Rigidbody2D playerThreeBEE;
+    public Rigidbody2D playerFourBEE;
+
+    
     public GameObject playerOneBee;
     public GameObject MainCharacter;
     public Animator ShootAnimation;
@@ -28,7 +35,7 @@ public class playerController : MonoBehaviour {
     public float BeeFlyingSpeed = 9;
     public float RotationSpeed;
     public float speed;
-    public int PlayerCount;
+    public int PlayerCount = 2;
 
 
     public bool LaunchingAnimationFinished;
@@ -112,16 +119,23 @@ public class playerController : MonoBehaviour {
         CharacterPosition.z = 0;
         dir = RotateDir.right;
         currentPlayer = CurrentPlayer.playerOne;
+        CurrentPlayerString = "Player One";
+
 
         UIControl = GameObject.Find("UiGameObjectController").GetComponent<uiController>();
 
-        CurrentPlayerString = "Player One";
+        
 
     }
 
     void BackToDefaults()
     {
-        currentPlayer = CurrentPlayer.playerOne;
+        moveSpeed = pf_HorizontalMoveSpeed * Time.deltaTime;
+        CharacterPosition.x = pf_XAxistStartingPosition;
+        CharacterPosition.y = pf_YAxisStartingPosition;
+        CharacterPosition.z = 0;
+        b_Stage1 = true;
+        dir = RotateDir.right;
 
     }
 
@@ -193,7 +207,25 @@ public class playerController : MonoBehaviour {
 
   
     void BeeLaunch()
-    {            
+    {
+        switch (currentPlayer)
+        {
+            case CurrentPlayer.playerOne:
+                FlyingBeeObject = playerOneBEE;
+                break;
+            case CurrentPlayer.playerTwo:
+                FlyingBeeObject = playerTwoBEE;
+                break;
+            case CurrentPlayer.playerThree:
+                FlyingBeeObject = playerThreeBEE;
+                break;
+            case CurrentPlayer.playerFour:
+                FlyingBeeObject = playerFourBEE;
+                break;
+        }
+
+
+
         StartCoroutine(StartAnimationSequence()); //Trying to get the code to stop to allow the animation to run first.              
                
         if (!IsPlayerBouncing)
@@ -208,82 +240,89 @@ public class playerController : MonoBehaviour {
             float shotAngleFloat = shotAngle.z;
             Vector3 dir = Quaternion.AngleAxis(shotAngleFloat, Vector3.up) * startPos;
             var angle = (shotAngleFloat * 100);
-            var player = Instantiate(playerOneBEE, startPos, Quaternion.identity);
+            var player = Instantiate(FlyingBeeObject, startPos, Quaternion.identity);
             var shootDir = Quaternion.Euler(0, 0, angle) * Vector3.up;
             player.GetComponent<Rigidbody2D>().velocity = shootDir * BeeFlyingSpeed;
 
             IsPlayerBouncing = true;
             
         }
+
+        
+
         b_Stage3 = false;
     }
 
     void PlayerReset()
     {
         //This is where i will reset all player stuffs. 
+
+        
+
+        if (currentPlayer == CurrentPlayer.playerFour)
+        {
+            Start();
+        }
+        else
+        {            
+            BackToDefaults();
+        }
+
+
+
     }
 
 
     public void PlayersTurnSwitch()
     {
         print("Player Turn Switch");
-        if (PlayerCount == 2)
-        {
+        
             switch (currentPlayer)
             {
                 case CurrentPlayer.playerOne:
+                    if (PlayerCount == 2)
+                {
                     currentPlayer = CurrentPlayer.playerTwo;
-                    return;
-            }
-        }
-        else if(PlayerCount == 3)
-        {
-            switch (currentPlayer)
-            {
-                case CurrentPlayer.playerOne:
-                    currentPlayer = CurrentPlayer.playerTwo;
-                    return;
+                }                        
+                    break;
                 case CurrentPlayer.playerTwo:
+                    if (PlayerCount == 3)
+                {
                     currentPlayer = CurrentPlayer.playerThree;
-                    return;
-            }
-        }
-        else if(PlayerCount == 4)
-        {
-            switch (currentPlayer)
-            {
-                case CurrentPlayer.playerOne:
-                    currentPlayer = CurrentPlayer.playerTwo;
-                    return;
-                case CurrentPlayer.playerTwo:
-                    currentPlayer = CurrentPlayer.playerThree;
-                    return;
+                }
+                       
+                    break;
                 case CurrentPlayer.playerThree:
+                    if (PlayerCount == 4)
+                {
                     currentPlayer = CurrentPlayer.playerFour;
-                    return;
+                }                       
+                    break;
+
             }
-        }
+    
         switch (currentPlayer)
         {
-            case CurrentPlayer.playerOne:
+            case CurrentPlayer.playerTwo:
                 b_Player2Turn = true;
                 b_Player1Turn = false;
                 CurrentPlayerString = "Player Two";
-                return;
-            case CurrentPlayer.playerTwo:
+                break;
+            case CurrentPlayer.playerThree:
                 b_Player2Turn = false;
                 b_Player3Turn = true;
                 CurrentPlayerString = "Player Three";
-                return;
-            case CurrentPlayer.playerThree:
+                break;
+            case CurrentPlayer.playerFour:
                 b_Player3Turn = false;
                 b_Player4Turn = true;
                 CurrentPlayerString = "Player Four";
-                return;
+                break;
         }    
         
         UIControl.NewPlayerAnimation(CurrentPlayerString);
         PlayerReset();
+
 
     }
 

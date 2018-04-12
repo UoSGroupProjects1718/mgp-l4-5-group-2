@@ -44,6 +44,9 @@ public class BeeController : MonoBehaviour {
 
             EndLevel = true;
 
+            PlayerController.PlayersTurnSwitch();
+
+
         }
 
 
@@ -56,7 +59,8 @@ public class BeeController : MonoBehaviour {
 
         if (EndLevel == true)
         {
-            PlayerController.PlayersTurnSwitch();
+            
+
         }
 
 

@@ -32,15 +32,15 @@ public class AnimationController : StateMachineBehaviour {
     public playerController PlayerController;
 
 
-    void Start()
-    {
-        PlayerController = GameObject.Find("Character").GetComponent<playerController>();
-    }
+    //void Start()
+    //{
+    //    PlayerController = GameObject.Find("Character").GetComponent<playerController>();
+    //}
 
-    void Update()
-    {
-        PlayerController.LaunchingAnimationFinished = true;
-    }
+    //void Update()
+    //{
+    //    PlayerController.LaunchingAnimationFinished = true;
+    //}
 
 
 
