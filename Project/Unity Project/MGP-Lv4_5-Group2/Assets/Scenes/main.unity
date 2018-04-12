@@ -323,6 +323,24 @@ Prefab:
       propertyPath: PlayerCount
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 114895719903628432, guid: d7395182dbf6b0941a686be6ef5a4991,
+        type: 2}
+      propertyPath: playerTwoBEE
+      value: 
+      objectReference: {fileID: 50989125271591690, guid: 018eccf8b04078046b0c18e9de2b7d95,
+        type: 2}
+    - target: {fileID: 114895719903628432, guid: d7395182dbf6b0941a686be6ef5a4991,
+        type: 2}
+      propertyPath: playerThreeBEE
+      value: 
+      objectReference: {fileID: 50989125271591690, guid: 018eccf8b04078046b0c18e9de2b7d95,
+        type: 2}
+    - target: {fileID: 114895719903628432, guid: d7395182dbf6b0941a686be6ef5a4991,
+        type: 2}
+      propertyPath: playerFourBEE
+      value: 
+      objectReference: {fileID: 50989125271591690, guid: 018eccf8b04078046b0c18e9de2b7d95,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d7395182dbf6b0941a686be6ef5a4991, type: 2}
   m_IsPrefabParent: 0

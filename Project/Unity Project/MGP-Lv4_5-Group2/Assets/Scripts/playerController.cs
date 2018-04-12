@@ -123,9 +123,6 @@ public class playerController : MonoBehaviour {
 
 
         UIControl = GameObject.Find("UiGameObjectController").GetComponent<uiController>();
-
-        
-
     }
 
     void BackToDefaults()
@@ -136,6 +133,8 @@ public class playerController : MonoBehaviour {
         CharacterPosition.z = 0;
         b_Stage1 = true;
         dir = RotateDir.right;
+        StartRotationDone = false;
+        IsPlayerBouncing = false;
 
     }
 
