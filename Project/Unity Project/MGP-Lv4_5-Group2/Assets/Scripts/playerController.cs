@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -121,8 +122,8 @@ public class playerController : MonoBehaviour {
         currentPlayer = CurrentPlayer.playerOne;
         CurrentPlayerString = "Player One";
 
+        UIControl = GameObject.Find("UiGameObjectController").GetComponent<uiController>();      
 
-        UIControl = GameObject.Find("UiGameObjectController").GetComponent<uiController>();
     }
 
     void BackToDefaults()
@@ -243,27 +244,39 @@ public class playerController : MonoBehaviour {
             var shootDir = Quaternion.Euler(0, 0, angle) * Vector3.up;
             player.GetComponent<Rigidbody2D>().velocity = shootDir * BeeFlyingSpeed;
 
-            IsPlayerBouncing = true;
-            
-        }
-
-        
+            IsPlayerBouncing = true;            
+        }        
 
         b_Stage3 = false;
     }
+    int PossiblePlayercount;
 
+
+    int currentplayercount = 1;
     void PlayerReset()
     {
-        //This is where i will reset all player stuffs. 
-
-        
-
-        if (currentPlayer == CurrentPlayer.playerFour)
+        //This is where i will reset all player stuffs.         
+        foreach (CurrentPlayer currentplayer in Enum.GetValues(typeof(CurrentPlayer)))
         {
-            Start();
+            PossiblePlayercount++;
+        }
+
+
+
+
+        if (currentplayercount == PossiblePlayercount || currentplayercount == PlayerCount)
+        {
+            //This is the last round.
+            //Start();
+            print("Max amount of plays per level");
+
+            //Move to next level. 
+
+
         }
         else
-        {            
+        {
+            currentplayercount++;
             BackToDefaults();
         }
 
@@ -321,61 +334,84 @@ public class playerController : MonoBehaviour {
         
         UIControl.NewPlayerAnimation(CurrentPlayerString);
         PlayerReset();
-
-
     }
 
     void MovePlayertoNextLevel()
     {
 
         float NewMainCharacterPosition = MainCharacter.transform.position.y + 10.7f;
+
+        BackToDefaults();
+        Start();
+
+        b_Stage3 = false;
+        b_Stage2 = false;
+
         while (MainCharacter.transform.position.y <= NewMainCharacterPosition)
         {
             MainCharacter.transform.Translate(0, moveSpeed, 0, Space.World);
-            //MainCharacter.transform.Translate(0, 0.5F, 0);
-            MainCharacter.transform.SetPositionAndRotation(MainCharacter.transform.position, Quaternion.Euler(0,0,0));            
-        }
-        b_Stage3 = false;
-        b_Stage2 = false;
-        b_Stage1 = true;
+            MainCharacter.transform.SetPositionAndRotation(MainCharacter.transform.position, Quaternion.Euler(0, 0, 0));
 
-        StartRotationDone = false;
-        IsPlayerBouncing = false;
+        }
+
+        //float NewMainCharacterPosition = MainCharacter.transform.position.y + 10.7f;
+        //while (MainCharacter.transform.position.y <= NewMainCharacterPosition)
+        //{
+        //    MainCharacter.transform.Translate(0, moveSpeed, 0, Space.World);
+        //    //MainCharacter.transform.Translate(0, 0.5F, 0);
+        //    MainCharacter.transform.SetPositionAndRotation(MainCharacter.transform.position, Quaternion.Euler(0,0,0));            
+        //}
+        //b_Stage3 = false;
+        //b_Stage2 = false;
+        //b_Stage1 = true;
+
+        //StartRotationDone = false;
+        //IsPlayerBouncing = false;
+
+        if (GameCamera.transform.position.y >= LevelCameraIncrement)
+            {
+              nextLevel = false;
+                MovePlayertoNextLevel();
+
+                    LevelCameraIncrement = LevelCameraIncrement + LevelCameraIncrement;
+                    return;
+                     LevelCameraIncrement = LevelCameraIncrement * 2; //For the next level
+               }
+
+
     }
 
     void MovetoNextLevel()
     {
-        while (nextLevel == true)
-        {
-            Debug.Log("While Loop");
-            GameCamera.transform.Translate(0, (CameraMovementSpeed * Time.deltaTime), 0, Space.World);
 
-            if (GameCamera.transform.position.y >= LevelCameraIncrement)
-            {
-                nextLevel = false;
-                MovePlayertoNextLevel();
 
-                LevelCameraIncrement = LevelCameraIncrement + LevelCameraIncrement;
-                return;
-                //  LevelCameraIncrement = LevelCameraIncrement * 2; //For the next level
-            }
-        }
+        //while (nextLevel == true)
+        //{
+        //    Debug.Log("While Loop");
+        //    GameCamera.transform.Translate(0, (CameraMovementSpeed * Time.deltaTime), 0, Space.World);
+
+        //    if (GameCamera.transform.position.y >= LevelCameraIncrement)
+        //    {
+        //        nextLevel = false;
+        //        MovePlayertoNextLevel();
+
+        //        LevelCameraIncrement = LevelCameraIncrement + LevelCameraIncrement;
+        //        return;
+        //        //  LevelCameraIncrement = LevelCameraIncrement * 2; //For the next level
+        //    }
+        //}
 
     }
 
     // Update is called once per frame
     void Update () {
-
-        
-        float MainCharacterCurrentPos = MainCharacter.transform.position.x;
-        
-
+                
+        float MainCharacterCurrentPos = MainCharacter.transform.position.x;      
         
         if(Input.GetKeyDown(KeyCode.Space))
         {
             TruthTable();
-        }
-        
+        }      
         
         //Main Stage Loop
 
@@ -394,7 +430,6 @@ public class playerController : MonoBehaviour {
             ////////
             
             RotateCharacterLoop();
-
             
             if (Input.GetKeyDown(KeyCode.Space))
             {
@@ -415,28 +450,27 @@ public class playerController : MonoBehaviour {
             BeeLaunch();           
         }
 
-
-
         if (b_Stage3 && IsPlayerBouncing)
         {
             
         }
 
-        if (!b_Stage1)
-        {
-            if (!b_Stage2)
-            {
-                if (!b_Stage3)
-                {
-                    MovetoNextLevel();
-                }
-            }
-        }
+        //if (!b_Stage1)
+        //{
+        //    if (!b_Stage2)
+        //    {
+        //        if (!b_Stage3)
+        //        {
+        //            MovetoNextLevel();
+        //        }
+        //    }
+        //}
 
-        if (Input.GetKeyDown(KeyCode.L))
+        if (Input.GetKeyDown(KeyCode.KeypadEnter))
         {
             nextLevel = true;
-            MovetoNextLevel();            
+            MovetoNextLevel();
+            MovePlayertoNextLevel();
         }     
     }
 }
