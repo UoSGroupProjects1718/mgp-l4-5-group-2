@@ -46,6 +46,8 @@ public class BeeController : MonoBehaviour {
 
             PlayerController.PlayerPassed = true;
 
+            
+            PlayerController.AddPoints(100, PlayerController.currentPlayer.ToString());
             PlayerController.PlayersTurnSwitch();
 
 
@@ -64,7 +66,56 @@ public class BeeController : MonoBehaviour {
 
 
 
+        //if (col.gameObject.tag == "Cherry")
+        //{
+        //	Debug.Log("EXPLOSIONS");
 
+        //	//PlayerController.playerOneBEE.AddForceAtPosition (new Vector2(1000000000000000,1000000000000000),PlayerController.playerOneBee.transform.position + new Vector3(30, 0, 0) ,ForceMode2D.Impulse);
+        //	//Cherry explodes and lauchs the bee in some direction
+        //	//PlayerController.playerOneBEE.AddForce(Vector2.down * 5000.0f + 2500.0f * PlayerController.playerOneBEE.velocity.normalized, ForceMode2D.Impulse);
+
+
+        //}
+
+        //if (col.gameObject.tag == "Mushroom")
+        //{
+        //	Debug.Log("MUSHROOMED");
+
+
+        //	//Whatever the mushroom does
+
+        //	PlayerController.playerOneBEE.gravityScale++;
+
+        //}
+
+        //if (col.gameObject.tag == "Thorn")
+        //{
+        //	Debug.Log("THORNS");
+
+
+        //	//Bee is violently impaled by thorns
+
+        //	Destroy(gameObject);
+        //}
+
+        //if (col.gameObject.tag == "Web")
+        //{
+        //	//Drag++;
+
+        //	Debug.Log("SLOWED");
+        //	//Bee is slowed down
+        //	Debug.Log(PlayerController.playerOneBEE.angularDrag);
+
+        //	PlayerController.playerOneBEE.angularDrag++;
+        //	PlayerController.playerOneBEE.drag++;
+
+
+
+        //	//PlayerController.playerOneBEE.drag = Drag;
+
+        //	Debug.Log(PlayerController.playerOneBEE.angularDrag);
+
+        //} 
 
 
 

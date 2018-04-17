@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class playerController : MonoBehaviour {
     /// <Public Variables>
@@ -24,8 +25,7 @@ public class playerController : MonoBehaviour {
     public GameObject playerOneBee;
     public GameObject MainCharacter;
     public Animator ShootAnimation;
-
-
+    
 
     public float pf_HorizontalMoveSpeed = 10;              //Movement Speed for the horizontal directional axis.
     public float pf_RotationSpeed = 10;                    //Movement speed for the rotation of the character.
@@ -33,21 +33,21 @@ public class playerController : MonoBehaviour {
     public float pf_HorizonatalEndPosition; 
     public float pf_YAxisStartingPosition = -2;                  //How high we wwant the character starting
     public float pf_XAxistStartingPosition = 0;  
-
     public float BeeFlyingSpeed = 9;
     public float RotationSpeed;
     public float speed;
+    public float CameraMovementSpeed;
+    public float LevelCameraIncrement;
+
     public int PlayerCount = 2;
+    public int LevelAmount; 
 
     public CurrentPlayer currentPlayer;
 
     public string CurrentPlayerString;
 
     public bool LaunchingAnimationFinished;
-
-    public float CameraMovementSpeed;
-    public float LevelCameraIncrement;
-
+    public bool PlayerPassed;
 
     /// <Private Variables>
     ///  - Functions only the inside of the program/code can access
@@ -57,17 +57,17 @@ public class playerController : MonoBehaviour {
     private Rigidbody2D rb;
     private Collider2D MainCharacterCollider;
 
-
     private float f_xAxisPosition;
     private float f_yAxisPositon;
     private float moveSpeed;
     private float RotationAngle = 90;
-    private float RotationMovementChunk = 1;
-    
-
+    private float RotationMovementChunk = 1;  
     
     private int i_Player1Points;
     private int i_Player2Points;
+    private int i_Player3Points;
+    private int i_Player4Points;
+    private int currentLevel = 1;
 
     private bool b_Stage1 = true;                                  //Horizontal Sliding Stage - Stage 1
     private bool b_Stage2;                                  //Rotational Stage - Stage 2
@@ -78,14 +78,10 @@ public class playerController : MonoBehaviour {
     private bool b_Player4Turn;
     private bool StartRotationDone = false;
     private bool IsPlayerBouncing;
-
-
+    private bool FinalLevel; 
     bool MovingLeft = true;
-
     bool MovingRight = false;
-    bool nextLevel;
-
-    public bool PlayerPassed;
+    bool nextLevel;    
 
 
     enum RotateDir
@@ -149,13 +145,11 @@ public class playerController : MonoBehaviour {
         dir = RotateDir.right;
         currentPlayer = CurrentPlayer.playerOne;
         CurrentPlayerString = "Player One";
+        currentplayercount = 1;
 
         UIControl = GameObject.Find("UiGameObjectController").GetComponent<uiController>();
 
         MainCharacterCollider = MainCharacter.GetComponent<PolygonCollider2D>();
-
-        
-
     }
 
     void BackToDefaults()
@@ -263,10 +257,7 @@ public class playerController : MonoBehaviour {
                 FlyingBeeObject = playerFourBEE;
                 break;
         }
-
-
         
-
         
         StartCoroutine(StartAnimationSequence()); //Trying to get the code to stop to allow the animation to run first.              
                
@@ -294,10 +285,52 @@ public class playerController : MonoBehaviour {
         b_Stage3 = false;
     }
 
+    //This adds points to any player from the BeeController.cs
+    public void AddPoints(int value, string player)
+    {
+        if(player == "playerOne")
+        {
+            i_Player1Points = i_Player1Points + value;
+        }
+        else if (player == "playerTwo")
+        {
+            i_Player2Points = i_Player2Points + value;
+        }
+        else if(player == "playerThree")
+        {
+            i_Player3Points = i_Player3Points + value;
+        }
+        else if(player == "playerFour")
+        {
+            i_Player4Points = i_Player4Points + value;
+        }
+    }
+
+    //This minus points to any player from BeeController.cs
+    public void MinusPoints(int value, string player)
+    {
+        if (player == "playerOne")
+        {
+            i_Player1Points = i_Player1Points - value;
+        }
+        else if (player == "playerTwo")
+        {
+            i_Player2Points = i_Player2Points - value;
+        }
+        else if (player == "playerThree")
+        {
+            i_Player3Points = i_Player3Points - value;
+        }
+        else if (player == "playerFour")
+        {
+            i_Player4Points = i_Player4Points - value;
+        }
+    }
+
+
     int PossiblePlayercount;
-
-
     int currentplayercount = 1;
+    //This resets the player/Changes to next player
     void PlayerReset()
     {
 
@@ -317,7 +350,7 @@ public class playerController : MonoBehaviour {
             //if a player has made it to the end, move to next level. 
             if (PlayerPassed == true)
             {
-                //Move to next level.
+                MovePlayertoNextLevel();
             }
             else
             {
@@ -327,9 +360,7 @@ public class playerController : MonoBehaviour {
                 currentplayercount = 1;
                 UIControl.NewPlayerAnimation(CurrentPlayerString);
                 //if a player has not, Start again.
-
             }
-
         }
         else
         {
@@ -338,7 +369,7 @@ public class playerController : MonoBehaviour {
         }
     }
 
-
+    //This is also part of switching players but changes more detailed stuff. 
     public void PlayersTurnSwitch()
     {
         print("Player Turn Switch");
@@ -390,78 +421,54 @@ public class playerController : MonoBehaviour {
         PlayerReset();
     }
 
+    //Teleport the player to the next incremted level.
     void MovePlayertoNextLevel()
     {
 
-        float NewMainCharacterPosition = MainCharacter.transform.position.y + 10.7f;
-
-        BackToDefaults();
-        Start();
-
-        b_Stage3 = false;
-        b_Stage2 = false;
-
-        while (MainCharacter.transform.position.y <= NewMainCharacterPosition)
+        if (currentLevel != LevelAmount)
         {
-            MainCharacter.transform.Translate(0, moveSpeed, 0, Space.World);
-            MainCharacter.transform.SetPositionAndRotation(MainCharacter.transform.position, Quaternion.Euler(0, 0, 0));
-
+            float NewMainCharacterPosition = MainCharacter.transform.position.y + 10.7f;
+            MainCharacter.transform.position = new Vector3(0, NewMainCharacterPosition);
+        }
+        else
+        {
+            FinalLevel = true;
         }
 
-        //float NewMainCharacterPosition = MainCharacter.transform.position.y + 10.7f;
-        //while (MainCharacter.transform.position.y <= NewMainCharacterPosition)
-        //{
-        //    MainCharacter.transform.Translate(0, moveSpeed, 0, Space.World);
-        //    //MainCharacter.transform.Translate(0, 0.5F, 0);
-        //    MainCharacter.transform.SetPositionAndRotation(MainCharacter.transform.position, Quaternion.Euler(0,0,0));            
-        //}
-        //b_Stage3 = false;
-        //b_Stage2 = false;
-        //b_Stage1 = true;
-
-        //StartRotationDone = false;
-        //IsPlayerBouncing = false;
-
-        if (GameCamera.transform.position.y >= LevelCameraIncrement)
-            {
-              nextLevel = false;
-                MovePlayertoNextLevel();
-
-                    LevelCameraIncrement = LevelCameraIncrement + LevelCameraIncrement;
-                    return;
-                     LevelCameraIncrement = LevelCameraIncrement * 2; //For the next level
-               }
-
-
+        MovetoCameraNextLevel();     
     }
 
-    void MovetoNextLevel()
+    //More Camera to the next incremented level
+    void MovetoCameraNextLevel()
     {
+        LevelCameraIncrement = GameCamera.transform.position.y + 10.0f;
+        GameCamera.transform.position = new Vector3(0, LevelCameraIncrement);
+        //LevelCameraIncrement = LevelCameraIncrement * 2; //For the next level
+        if (FinalLevel == true)
+        {
+            Debug.Log(Mathf.Max(i_Player1Points, i_Player2Points, i_Player3Points, i_Player4Points));       
+        }
+        else
+        {
+            ActivateNewLevel();
+        }
+        
+    }
 
+    //Activate the next level i.e start moving stuff etc
+    void ActivateNewLevel()
+    {
+        currentLevel++;
 
-        //while (nextLevel == true)
-        //{
-        //    Debug.Log("While Loop");
-        //    GameCamera.transform.Translate(0, (CameraMovementSpeed * Time.deltaTime), 0, Space.World);
-
-        //    if (GameCamera.transform.position.y >= LevelCameraIncrement)
-        //    {
-        //        nextLevel = false;
-        //        MovePlayertoNextLevel();
-
-        //        LevelCameraIncrement = LevelCameraIncrement + LevelCameraIncrement;
-        //        return;
-        //        //  LevelCameraIncrement = LevelCameraIncrement * 2; //For the next level
-        //    }
-        //}
-
+        BackToDefaults();
+        Start();        
     }
 
     // Update is called once per frame
     void Update () {
                 
-        float MainCharacterCurrentPos = MainCharacter.transform.position.x;      
-        
+        float MainCharacterCurrentPos = MainCharacter.transform.position.x;        
+
         if(Input.GetKeyDown(KeyCode.Space))
         {
             TruthTable();
@@ -471,6 +478,7 @@ public class playerController : MonoBehaviour {
 
         if (b_Stage1)
         {
+            UIControl.NewPlayerAnimation(CurrentPlayerString);
             //////////
             // - Horizontal Movment Stage
             /////////
@@ -495,8 +503,7 @@ public class playerController : MonoBehaviour {
                 }                
             }                                
         }
-
-
+        
         if(Input.GetKeyDown(KeyCode.Space) && b_Stage3)
         {
             /////////
@@ -510,22 +517,33 @@ public class playerController : MonoBehaviour {
             
         }
 
-        //if (!b_Stage1)
-        //{
-        //    if (!b_Stage2)
-        //    {
-        //        if (!b_Stage3)
-        //        {
-        //            MovetoNextLevel();
-        //        }
-        //    }
-        //}
 
-        if (Input.GetKeyDown(KeyCode.KeypadEnter))
+        UpdateScores();
+
+        //Exit Game
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            nextLevel = true;
-            MovetoNextLevel();
-            MovePlayertoNextLevel();
-        }     
+                SceneManager.LoadScene(0);
+                SceneManager.UnloadSceneAsync(2);
+            SceneManager.UnloadSceneAsync(1);
+
+
+
+        }
+
+        //Debug Mode Tools
+        if (Input.GetKeyDown(KeyCode.Backspace))
+        {
+            LevelCameraIncrement = GameCamera.transform.position.y + 10.0f;
+            GameCamera.transform.position = new Vector3(0, LevelCameraIncrement);
+        }
+        
     }
+    
+    void UpdateScores()
+    {
+        UIControl.UpdateScores(i_Player1Points, i_Player2Points, i_Player3Points, i_Player4Points);
+    }
+
+
 }

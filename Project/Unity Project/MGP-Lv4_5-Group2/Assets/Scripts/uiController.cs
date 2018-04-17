@@ -16,8 +16,12 @@ public class uiController : MonoBehaviour {
 
     public float TimerStartingPoint;
 
-    private float f_PlayeroneScore;
-    private float f_PlayerTwoScore;
+    private int i_PlayeroneScore;
+    private int i_PlayerTwoScore;
+    private int i_PlayerThreeScore;
+    private int i_PlayerFourScore;
+
+
 
 
     private string scoreBaseText = "Score:   ";
@@ -39,8 +43,9 @@ public class uiController : MonoBehaviour {
         if (HasRun == true)
         {         
 
-            PlayerOneScoreText.text = scoreBaseText + f_PlayeroneScore;
-            PlayerTwoScoreText.text = scoreBaseText + f_PlayerTwoScore;
+            PlayerOneScoreText.text = scoreBaseText + i_PlayeroneScore;
+            PlayerTwoScoreText.text = scoreBaseText + i_PlayerTwoScore;
+
             Timer = TimerStartingPoint;
 
             HasRun = false;
@@ -49,8 +54,8 @@ public class uiController : MonoBehaviour {
         else
         {
             StartingPlayerTextAnimation();
-            PlayerOneScoreText.text = scoreBaseText + f_PlayeroneScore;
-            PlayerTwoScoreText.text = scoreBaseText + f_PlayerTwoScore;
+            PlayerOneScoreText.text = scoreBaseText + i_PlayeroneScore;
+            PlayerTwoScoreText.text = scoreBaseText + i_PlayerTwoScore; 
         }
 
     }
@@ -59,27 +64,15 @@ public class uiController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            f_PlayeroneScore = f_PlayeroneScore + 5;
-        }
-
         
-        PlayerOneScoreText.text = scoreBaseText + f_PlayeroneScore;
-        PlayerTwoScoreText.text = scoreBaseText + f_PlayerTwoScore;
+        PlayerOneScoreText.text = scoreBaseText + i_PlayeroneScore;
+        PlayerTwoScoreText.text = scoreBaseText + i_PlayerTwoScore; 
 
-        TimerCountdown(TimerStartingPoint, Timer);
-    }
-
-    public void TimerCountdown(float timerStart, float Timer)
+    }  
+    public void UpdateScores(int p1, int p2, int p3, int p4)
     {
-
-        //Timer -= 1 * Time.deltaTime;
-
-        //text_CountdownTimer.text = Timer.ToString();
-
-
+         i_PlayeroneScore = p1;
+         i_PlayeroneScore = p1;
     }
 
     public void PlayeranimatedTextFilling()
