@@ -9,6 +9,7 @@ TagManager:
   - Hazard
   - Character
   - LevelEnd
+  - Ground
   layers:
   - Default
   - TransparentFX

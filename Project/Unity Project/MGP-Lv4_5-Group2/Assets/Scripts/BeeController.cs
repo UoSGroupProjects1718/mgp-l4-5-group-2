@@ -44,16 +44,38 @@ public class BeeController : MonoBehaviour {
 
             EndLevel = true;
 
+            PlayerController.PlayerPassed = true;
+
             PlayerController.PlayersTurnSwitch();
 
 
+        }
+
+        if (col.gameObject.tag == "Ground")
+        {
+            Debug.Log("Bee has hit the ground - Delete - Turn over"); 
+            UIControl.PlayerAnimatedText.text = PlayerController.currentPlayer.ToString() + " Failed";
+            Debug.Log(UIControl.PlayerAnimatedText.text);
+            //StartCoroutine(PlayerController.TurnSwitchTimer(3.0f));
+            Destroy(gameObject);
+            
+            PlayerController.PlayersTurnSwitch();
         }
 
 
 
 
 
+
+
     }
+
+    public void DestroyGameObject()
+    {
+        //Destroy(gameObject);
+    }
+
+
     // Update is called once per frame
     void Update () {
 

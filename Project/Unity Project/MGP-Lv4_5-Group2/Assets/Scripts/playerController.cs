@@ -33,15 +33,20 @@ public class playerController : MonoBehaviour {
     public float pf_HorizonatalEndPosition; 
     public float pf_YAxisStartingPosition = -2;                  //How high we wwant the character starting
     public float pf_XAxistStartingPosition = 0;  
+
     public float BeeFlyingSpeed = 9;
     public float RotationSpeed;
     public float speed;
     public int PlayerCount = 2;
 
+    public CurrentPlayer currentPlayer;
+
+    public string CurrentPlayerString;
 
     public bool LaunchingAnimationFinished;
 
-
+    public float CameraMovementSpeed;
+    public float LevelCameraIncrement;
 
 
     /// <Private Variables>
@@ -50,14 +55,15 @@ public class playerController : MonoBehaviour {
 
     private Vector3 CharacterPosition;
     private Rigidbody2D rb;
+    private Collider2D MainCharacterCollider;
+
 
     private float f_xAxisPosition;
     private float f_yAxisPositon;
     private float moveSpeed;
     private float RotationAngle = 90;
     private float RotationMovementChunk = 1;
-    public float CameraMovementSpeed;
-    public float LevelCameraIncrement;
+    
 
     
     private int i_Player1Points;
@@ -75,12 +81,11 @@ public class playerController : MonoBehaviour {
 
 
     bool MovingLeft = true;
+
     bool MovingRight = false;
     bool nextLevel;
 
-    public CurrentPlayer currentPlayer;
-
-    public string CurrentPlayerString;
+    public bool PlayerPassed;
 
 
     enum RotateDir
@@ -108,6 +113,29 @@ public class playerController : MonoBehaviour {
 
     }
 
+    IEnumerator EndAnimationSequence()
+    {
+        ShootAnimation.ResetTrigger("BeeLaunch");
+        
+
+        yield return new WaitForSeconds(2000000f);
+    }
+
+    //does not work Currently
+    public IEnumerator TurnSwitchTimer(float waitTime)
+    {
+        Debug.Log(Time.time);
+        
+        Time.timeScale = 0;
+        beeController.DestroyGameObject();
+        
+
+
+        yield return new WaitForSeconds(waitTime);
+        PlayersTurnSwitch();
+        Debug.Log(Time.time);
+    }
+
     RotateDir dir;
    
 
@@ -122,7 +150,11 @@ public class playerController : MonoBehaviour {
         currentPlayer = CurrentPlayer.playerOne;
         CurrentPlayerString = "Player One";
 
-        UIControl = GameObject.Find("UiGameObjectController").GetComponent<uiController>();      
+        UIControl = GameObject.Find("UiGameObjectController").GetComponent<uiController>();
+
+        MainCharacterCollider = MainCharacter.GetComponent<PolygonCollider2D>();
+
+        
 
     }
 
@@ -132,11 +164,13 @@ public class playerController : MonoBehaviour {
         CharacterPosition.x = pf_XAxistStartingPosition;
         CharacterPosition.y = pf_YAxisStartingPosition;
         CharacterPosition.z = 0;
+        MainCharacter.transform.rotation = Quaternion.identity;
+        
         b_Stage1 = true;
         dir = RotateDir.right;
         StartRotationDone = false;
         IsPlayerBouncing = false;
-
+        EndAnimationSequence();
     }
 
     void OnCollisionEnter2D(Collision2D col)
@@ -156,6 +190,10 @@ public class playerController : MonoBehaviour {
                 moveSpeed = -moveSpeed;
             }
         }
+
+
+
+
     }
 
     void TruthTable()
@@ -176,11 +214,13 @@ public class playerController : MonoBehaviour {
         }
     }
 
+    //This moves the launch pad side to side. 
     void MoveCharacterLoop()
     {
         MainCharacter.transform.Translate(moveSpeed, 0, 0, Space.World);
     }
 
+    //This rotates the Launch pad
     void RotateCharacterLoop()
     {
         float TargetRotation = 90.0f;
@@ -205,7 +245,7 @@ public class playerController : MonoBehaviour {
         }
     }
 
-  
+    //This launches the bee from the launchpad. 
     void BeeLaunch()
     {
         switch (currentPlayer)
@@ -225,11 +265,14 @@ public class playerController : MonoBehaviour {
         }
 
 
+        
 
+        
         StartCoroutine(StartAnimationSequence()); //Trying to get the code to stop to allow the animation to run first.              
                
         if (!IsPlayerBouncing)
         {
+           // MainCharacterCollider.enabled = false;
             rb = GetComponent<Rigidbody2D>();
 
             Vector3 startPos = transform.position;
@@ -244,25 +287,26 @@ public class playerController : MonoBehaviour {
             var shootDir = Quaternion.Euler(0, 0, angle) * Vector3.up;
             player.GetComponent<Rigidbody2D>().velocity = shootDir * BeeFlyingSpeed;
 
-            IsPlayerBouncing = true;            
+            IsPlayerBouncing = true;
+            //MainCharacterCollider.enabled = true;
         }        
 
         b_Stage3 = false;
     }
+
     int PossiblePlayercount;
 
 
     int currentplayercount = 1;
     void PlayerReset()
     {
+
+        EndAnimationSequence();
         //This is where i will reset all player stuffs.         
         foreach (CurrentPlayer currentplayer in Enum.GetValues(typeof(CurrentPlayer)))
         {
             PossiblePlayercount++;
         }
-
-
-
 
         if (currentplayercount == PossiblePlayercount || currentplayercount == PlayerCount)
         {
@@ -270,8 +314,21 @@ public class playerController : MonoBehaviour {
             //Start();
             print("Max amount of plays per level");
 
-            //Move to next level. 
+            //if a player has made it to the end, move to next level. 
+            if (PlayerPassed == true)
+            {
+                //Move to next level.
+            }
+            else
+            {
+                currentPlayer = CurrentPlayer.playerOne;
+                CurrentPlayerString = "Player One";
+                BackToDefaults();
+                currentplayercount = 1;
+                UIControl.NewPlayerAnimation(CurrentPlayerString);
+                //if a player has not, Start again.
 
+            }
 
         }
         else
@@ -279,9 +336,6 @@ public class playerController : MonoBehaviour {
             currentplayercount++;
             BackToDefaults();
         }
-
-
-
     }
 
 
@@ -420,7 +474,8 @@ public class playerController : MonoBehaviour {
             //////////
             // - Horizontal Movment Stage
             /////////
-            
+            MainCharacterCollider.enabled = true;
+            EndAnimationSequence();
             MoveCharacterLoop();
         }
         else if(b_Stage2)
@@ -428,7 +483,7 @@ public class playerController : MonoBehaviour {
             /////////
             // - Rotation Stage of the Game
             ////////
-            
+            MainCharacterCollider.enabled = false;
             RotateCharacterLoop();
             
             if (Input.GetKeyDown(KeyCode.Space))

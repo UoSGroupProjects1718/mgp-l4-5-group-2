@@ -321,7 +321,7 @@ Prefab:
     - target: {fileID: 114895719903628432, guid: d7395182dbf6b0941a686be6ef5a4991,
         type: 2}
       propertyPath: PlayerCount
-      value: 5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 114895719903628432, guid: d7395182dbf6b0941a686be6ef5a4991,
         type: 2}
@@ -341,6 +341,11 @@ Prefab:
       value: 
       objectReference: {fileID: 50989125271591690, guid: 018eccf8b04078046b0c18e9de2b7d95,
         type: 2}
+    - target: {fileID: 60963520419572256, guid: d7395182dbf6b0941a686be6ef5a4991,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d7395182dbf6b0941a686be6ef5a4991, type: 2}
   m_IsPrefabParent: 0
@@ -1796,7 +1801,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4730052281701048, guid: b6f42dcd3aeb702469ad2cb8f4d41645, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -3.01
+      value: -0.8
       objectReference: {fileID: 0}
     - target: {fileID: 4730052281701048, guid: b6f42dcd3aeb702469ad2cb8f4d41645, type: 2}
       propertyPath: m_LocalPosition.z
@@ -3001,7 +3006,7 @@ GameObject:
   - component: {fileID: 1970023471}
   m_Layer: 0
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3074,7 +3079,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1970023469}
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: -0, y: -4.66, z: 2}
+  m_LocalPosition: {x: -0, y: -2.26, z: 2}
   m_LocalScale: {x: 0.29999778, y: 8.341876, z: 0.424949}
   m_Children: []
   m_Father: {fileID: 0}
