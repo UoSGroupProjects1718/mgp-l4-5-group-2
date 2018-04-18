@@ -10,6 +10,8 @@ TagManager:
   - Character
   - LevelEnd
   - Ground
+  - Cherry
+  - Thorn
   layers:
   - Default
   - TransparentFX

@@ -49,6 +49,8 @@ public class playerController : MonoBehaviour {
     public bool LaunchingAnimationFinished;
     public bool PlayerPassed;
 
+    public Vector3 PublicGameobjectDir;
+
     /// <Private Variables>
     ///  - Functions only the inside of the program/code can access
     /// </Private Variables>
@@ -276,6 +278,9 @@ public class playerController : MonoBehaviour {
             var angle = (shotAngleFloat * 100);
             var player = Instantiate(FlyingBeeObject, startPos, Quaternion.identity);
             var shootDir = Quaternion.Euler(0, 0, angle) * Vector3.up;
+
+            PublicGameobjectDir = shootDir;
+
             player.GetComponent<Rigidbody2D>().velocity = shootDir * BeeFlyingSpeed;
 
             IsPlayerBouncing = true;

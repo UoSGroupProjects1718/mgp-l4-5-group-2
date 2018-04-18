@@ -16,6 +16,8 @@ public class BeeController : MonoBehaviour {
     private levelController LevelScript;
     private playerController PlayerController;
 
+    public Rigidbody2D Rigidbody;
+
     void Awake()
     {
         
@@ -28,7 +30,7 @@ public class BeeController : MonoBehaviour {
         // prefabText = prefabText.GetComponent<Text>();
         UIControl = GameObject.Find("UiGameObjectController").GetComponent<uiController>();
         PlayerController = GameObject.Find("Character").GetComponent<playerController>();
-
+        Rigidbody = GetComponent<Rigidbody2D>();
     }
 
     void OnCollisionEnter2D(Collision2D col)
@@ -66,16 +68,44 @@ public class BeeController : MonoBehaviour {
 
 
 
-        //if (col.gameObject.tag == "Cherry")
-        //{
-        //	Debug.Log("EXPLOSIONS");
+        if (col.gameObject.tag == "Cherry")
+        {
+            Debug.Log("explosions");
 
-        //	//PlayerController.playerOneBEE.AddForceAtPosition (new Vector2(1000000000000000,1000000000000000),PlayerController.playerOneBee.transform.position + new Vector3(30, 0, 0) ,ForceMode2D.Impulse);
-        //	//Cherry explodes and lauchs the bee in some direction
-        //	//PlayerController.playerOneBEE.AddForce(Vector2.down * 5000.0f + 2500.0f * PlayerController.playerOneBEE.velocity.normalized, ForceMode2D.Impulse);
+            Vector3 playercurrentPos;
+            Vector3 AddExplosion;
+
+            Vector3 HazardOriginalLocation = col.collider.transform.position;
 
 
-        //}
+            Vector3 aimedDirection;
+
+            float thrust = 1000.0f;
+
+
+
+            aimedDirection = (PlayerController.transform.position - transform.position).normalized;
+
+
+            //Add animation
+
+
+
+
+            // PlayerController.FlyingBeeObject.AddForce(aimedDirection * thrust);
+            //PlayerController.FlyingBeeObject.AddForceAtPosition((aimedDirection * thrust), HazardOriginalLocation);
+
+            Rigidbody.velocity = Vector3.zero;
+            Rigidbody.AddForce(aimedDirection * thrust, ForceMode2D.Impulse);
+             
+            Destroy(col.collider.gameObject);
+
+            //playercontroller.playeronebee.addforceatposition(new vector2(1000000000000000, 1000000000000000), playercontroller.playeronebee.transform.position + new vector3(30, 0, 0), forcemode2d.impulse);
+            //cherry explodes and lauchs the bee in some direction
+            //playercontroller.playeronebee.addforce(vector2.down * 5000.0f + 2500.0f * playercontroller.playeronebee.velocity.normalized, forcemode2d.impulse);
+
+
+        }
 
         //if (col.gameObject.tag == "Mushroom")
         //{
