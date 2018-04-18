@@ -50,6 +50,7 @@ public class playerController : MonoBehaviour {
     public bool PlayerPassed;
 
     public Vector3 PublicGameobjectDir;
+    public float PlayerLevelIncrement;
 
     /// <Private Variables>
     ///  - Functions only the inside of the program/code can access
@@ -432,7 +433,7 @@ public class playerController : MonoBehaviour {
 
         if (currentLevel != LevelAmount)
         {
-            float NewMainCharacterPosition = MainCharacter.transform.position.y + 10.7f;
+            float NewMainCharacterPosition = MainCharacter.transform.position.y + PlayerLevelIncrement;
             MainCharacter.transform.position = new Vector3(0, NewMainCharacterPosition);
         }
         else

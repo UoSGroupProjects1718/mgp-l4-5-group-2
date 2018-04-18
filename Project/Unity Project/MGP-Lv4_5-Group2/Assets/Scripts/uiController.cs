@@ -72,7 +72,8 @@ public class uiController : MonoBehaviour {
     public void UpdateScores(int p1, int p2, int p3, int p4)
     {
          i_PlayeroneScore = p1;
-         i_PlayeroneScore = p1;
+         i_PlayerTwoScore = p2;
+        
     }
 
     public void PlayeranimatedTextFilling()
