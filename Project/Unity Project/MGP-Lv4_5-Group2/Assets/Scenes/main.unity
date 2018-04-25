@@ -681,7 +681,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -3, y: 330}
+  m_AnchoredPosition: {x: -3, y: 329.99997}
   m_SizeDelta: {x: 1023.6, y: 849.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &34809085
@@ -31535,7 +31535,7 @@ GameObject:
   - component: {fileID: 1970023474}
   - component: {fileID: 1970023471}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: floor
   m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

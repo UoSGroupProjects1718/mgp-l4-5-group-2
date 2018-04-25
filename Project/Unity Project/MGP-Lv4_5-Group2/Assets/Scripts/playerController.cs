@@ -70,6 +70,10 @@ public class playerController : MonoBehaviour {
     private int i_Player4Points;
     private int currentLevel = 1;
 
+    private int playerOneCurrentTurn;
+    private int playerTwoCurrentTurn;
+
+
     private bool b_Stage1 = true;                                  //Horizontal Sliding Stage - Stage 1
     private bool b_Stage2;                                  //Rotational Stage - Stage 2
     private bool b_Stage3;                                  //Power Stage - stage 3
@@ -85,6 +89,9 @@ public class playerController : MonoBehaviour {
     bool MovingRight = false;
     bool nextLevel;
     bool AnimationActive;
+
+
+
 
 
     enum RotateDir
@@ -114,7 +121,7 @@ public class playerController : MonoBehaviour {
         //ShootAnimation.ResetTrigger("BeeLaunch");
         
 
-        yield return new WaitForSeconds(2000000f);
+        yield return new WaitForSeconds(20f);
     }
 
     //does not work Currently
