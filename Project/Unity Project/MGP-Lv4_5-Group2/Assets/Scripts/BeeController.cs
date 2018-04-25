@@ -75,7 +75,7 @@ public class BeeController : MonoBehaviour {
             Rigidbody.AddForce(aimedDirection * thrust, ForceMode2D.Impulse);             
             Destroy(col.collider.gameObject);
 
-   
+            PlayerController.PlayersTurnSwitch();
 
         }
 
