@@ -12,7 +12,6 @@ public class playerController : MonoBehaviour {
     BeeController beeController;
     uiController UIControl;
 
-
     public GameObject GameCamera;
     public Rigidbody2D FlyingBeeObject;
 
@@ -20,12 +19,11 @@ public class playerController : MonoBehaviour {
     public Rigidbody2D playerTwoBEE;
     public Rigidbody2D playerThreeBEE;
     public Rigidbody2D playerFourBEE;
-
-    
+        
     public GameObject playerOneBee;
     public GameObject MainCharacter;
-    public Animator ShootAnimation;
-    
+
+    public Animator ShootAnimation;    
 
     public float pf_HorizontalMoveSpeed = 10;              //Movement Speed for the horizontal directional axis.
     public float pf_RotationSpeed = 10;                    //Movement speed for the rotation of the character.
@@ -48,6 +46,7 @@ public class playerController : MonoBehaviour {
 
     public bool LaunchingAnimationFinished;
     public bool PlayerPassed;
+    public bool AnimationFinished;
 
     public Vector3 PublicGameobjectDir;
     public float PlayerLevelIncrement;
@@ -82,6 +81,7 @@ public class playerController : MonoBehaviour {
     private bool StartRotationDone = false;
     private bool IsPlayerBouncing;
     private bool FinalLevel; 
+
     bool MovingLeft = true;
     bool MovingRight = false;
     bool nextLevel;    
@@ -103,12 +103,9 @@ public class playerController : MonoBehaviour {
 
     IEnumerator StartAnimationSequence()
     {
-
         //Start animation
         ShootAnimation.SetTrigger("BeeLaunch");
-
-
-        yield return new WaitForSeconds(2000000f);
+        yield return new WaitForSeconds(200f);
 
     }
 
@@ -127,9 +124,6 @@ public class playerController : MonoBehaviour {
         
         Time.timeScale = 0;
         beeController.DestroyGameObject();
-        
-
-
         yield return new WaitForSeconds(waitTime);
         PlayersTurnSwitch();
         Debug.Log(Time.time);
@@ -179,7 +173,6 @@ public class playerController : MonoBehaviour {
             {
                 Debug.Log("Move Speed is Moving Left");
                 moveSpeed = -moveSpeed;
-
             }
             else if (moveSpeed < 0)
             {
@@ -187,10 +180,6 @@ public class playerController : MonoBehaviour {
                 moveSpeed = -moveSpeed;
             }
         }
-
-
-
-
     }
 
     void TruthTable()
@@ -220,16 +209,12 @@ public class playerController : MonoBehaviour {
     //This rotates the Launch pad
     void RotateCharacterLoop()
     {
-        float TargetRotation = 90.0f;
-        
+        float TargetRotation = 90.0f;        
         if (!StartRotationDone)
         {
-
             float angle = transform.rotation.eulerAngles.z;
-
             transform.rotation = Quaternion.Euler(0, 0, RotationMovementChunk * ((RotationSpeed * 5) * Time.time));
-
-            
+                        
            if (angle >= TargetRotation)
             {
                 print("We hit our target rotation");
@@ -259,8 +244,7 @@ public class playerController : MonoBehaviour {
             case CurrentPlayer.playerFour:
                 FlyingBeeObject = playerFourBEE;
                 break;
-        }
-        
+        }      
         
         StartCoroutine(StartAnimationSequence()); //Trying to get the code to stop to allow the animation to run first.              
                
@@ -287,7 +271,6 @@ public class playerController : MonoBehaviour {
             IsPlayerBouncing = true;
             //MainCharacterCollider.enabled = true;
         }        
-
         b_Stage3 = false;
     }
 
@@ -336,6 +319,7 @@ public class playerController : MonoBehaviour {
 
     int PossiblePlayercount;
     int currentplayercount = 1;
+
     //This resets the player/Changes to next player
     void PlayerReset()
     {
@@ -430,7 +414,6 @@ public class playerController : MonoBehaviour {
     //Teleport the player to the next incremted level.
     void MovePlayertoNextLevel()
     {
-
         if (currentLevel != LevelAmount)
         {
             float NewMainCharacterPosition = MainCharacter.transform.position.y + PlayerLevelIncrement;
@@ -440,7 +423,6 @@ public class playerController : MonoBehaviour {
         {
             FinalLevel = true;
         }
-
         MovetoCameraNextLevel();     
     }
 
@@ -457,15 +439,13 @@ public class playerController : MonoBehaviour {
         else
         {
             ActivateNewLevel();
-        }
-        
+        }        
     }
 
     //Activate the next level i.e start moving stuff etc
     void ActivateNewLevel()
     {
         currentLevel++;
-
         BackToDefaults();
         Start();        
     }
@@ -478,11 +458,14 @@ public class playerController : MonoBehaviour {
         if(Input.GetKeyDown(KeyCode.Space))
         {
             TruthTable();
-        }      
-        
-        //Main Stage Loop
+        }
 
-        if (b_Stage1)
+        //Main Stage Loop
+        if (AnimationFinished == false)
+        {
+            Debug.Log("Animation Not Complete");
+        }
+        else if (b_Stage1)
         {
             UIControl.NewPlayerAnimation(CurrentPlayerString);
             //////////
@@ -529,12 +512,9 @@ public class playerController : MonoBehaviour {
         //Exit Game
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-                SceneManager.LoadScene(0);
-                SceneManager.UnloadSceneAsync(2);
+            SceneManager.LoadScene(0);
+            SceneManager.UnloadSceneAsync(2);
             SceneManager.UnloadSceneAsync(1);
-
-
-
         }
 
         //Debug Mode Tools
