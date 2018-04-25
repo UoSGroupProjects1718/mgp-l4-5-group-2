@@ -11,6 +11,7 @@ public class playerController : MonoBehaviour {
 
     BeeController beeController;
     uiController UIControl;
+    public UIAnimatorControl uiAnimControl;
 
     public GameObject GameCamera;
     public Rigidbody2D FlyingBeeObject;
@@ -22,8 +23,9 @@ public class playerController : MonoBehaviour {
         
     public GameObject playerOneBee;
     public GameObject MainCharacter;
+    
 
-    public Animator ShootAnimation;    
+    public Animator ShootAnimation;
 
     public float pf_HorizontalMoveSpeed = 10;              //Movement Speed for the horizontal directional axis.
     public float pf_RotationSpeed = 10;                    //Movement speed for the rotation of the character.
@@ -43,10 +45,7 @@ public class playerController : MonoBehaviour {
     public CurrentPlayer currentPlayer;
 
     public string CurrentPlayerString;
-
-    public bool LaunchingAnimationFinished;
     public bool PlayerPassed;
-    public bool AnimationFinished;
 
     public Vector3 PublicGameobjectDir;
     public float PlayerLevelIncrement;
@@ -84,7 +83,8 @@ public class playerController : MonoBehaviour {
 
     bool MovingLeft = true;
     bool MovingRight = false;
-    bool nextLevel;    
+    bool nextLevel;
+    bool AnimationActive;
 
 
     enum RotateDir
@@ -104,14 +104,14 @@ public class playerController : MonoBehaviour {
     IEnumerator StartAnimationSequence()
     {
         //Start animation
-        ShootAnimation.SetTrigger("BeeLaunch");
+        //ShootAnimation.SetTrigger("BeeLaunch");
         yield return new WaitForSeconds(200f);
 
     }
 
     IEnumerator EndAnimationSequence()
     {
-        ShootAnimation.ResetTrigger("BeeLaunch");
+        //ShootAnimation.ResetTrigger("BeeLaunch");
         
 
         yield return new WaitForSeconds(2000000f);
@@ -130,10 +130,13 @@ public class playerController : MonoBehaviour {
     }
 
     RotateDir dir;
-   
+
+
+
+
 
     // Use this for initialization
-   public  void Start () {
+    public void Start() {
 
         moveSpeed = pf_HorizontalMoveSpeed * Time.deltaTime;
         CharacterPosition.x = pf_XAxistStartingPosition;
@@ -143,9 +146,9 @@ public class playerController : MonoBehaviour {
         currentPlayer = CurrentPlayer.playerOne;
         CurrentPlayerString = "Player One";
         currentplayercount = 1;
-
+       // AnimationFinished = true;
         UIControl = GameObject.Find("UiGameObjectController").GetComponent<uiController>();
-
+        uiAnimControl = GameObject.Find("PlayerChangeImage").GetComponent<UIAnimatorControl>();
         MainCharacterCollider = MainCharacter.GetComponent<PolygonCollider2D>();
     }
 
@@ -209,6 +212,7 @@ public class playerController : MonoBehaviour {
     //This rotates the Launch pad
     void RotateCharacterLoop()
     {
+        ShootAnimation.SetTrigger("Rotation");
         float TargetRotation = 90.0f;        
         if (!StartRotationDone)
         {
@@ -230,6 +234,8 @@ public class playerController : MonoBehaviour {
     //This launches the bee from the launchpad. 
     void BeeLaunch()
     {
+        ShootAnimation.SetTrigger("BeeLaunch");
+
         switch (currentPlayer)
         {
             case CurrentPlayer.playerOne:
@@ -247,7 +253,7 @@ public class playerController : MonoBehaviour {
         }      
         
         StartCoroutine(StartAnimationSequence()); //Trying to get the code to stop to allow the animation to run first.              
-               
+        
         if (!IsPlayerBouncing)
         {
            // MainCharacterCollider.enabled = false;
@@ -270,8 +276,17 @@ public class playerController : MonoBehaviour {
 
             IsPlayerBouncing = true;
             //MainCharacterCollider.enabled = true;
+            AnimationActive = true;
+            ShootAnimation.SetTrigger("BeeLaunch");
         }        
         b_Stage3 = false;
+
+
+    }
+
+    public void StopAnimation()
+    {
+        AnimationActive = false;
     }
 
     //This adds points to any player from the BeeController.cs
@@ -357,6 +372,9 @@ public class playerController : MonoBehaviour {
             currentplayercount++;
             BackToDefaults();
         }
+
+        uiAnimControl.AnimationActive = true;
+        uiAnimControl.PlayerChange.SetTrigger("PlayerChange");
     }
 
     //This is also part of switching players but changes more detailed stuff. 
@@ -376,8 +394,7 @@ public class playerController : MonoBehaviour {
                     if (PlayerCount == 3)
                 {
                     currentPlayer = CurrentPlayer.playerThree;
-                }
-                       
+                }                       
                     break;
                 case CurrentPlayer.playerThree:
                     if (PlayerCount == 4)
@@ -385,7 +402,6 @@ public class playerController : MonoBehaviour {
                     currentPlayer = CurrentPlayer.playerFour;
                 }                       
                     break;
-
             }
     
         switch (currentPlayer)
@@ -407,10 +423,11 @@ public class playerController : MonoBehaviour {
                 break;
         }    
         
-        UIControl.NewPlayerAnimation(CurrentPlayerString);
+        //UIControl.NewPlayerAnimation(CurrentPlayerString);
+        
         PlayerReset();
     }
-
+    
     //Teleport the player to the next incremted level.
     void MovePlayertoNextLevel()
     {
@@ -453,19 +470,20 @@ public class playerController : MonoBehaviour {
     // Update is called once per frame
     void Update () {
                 
-        float MainCharacterCurrentPos = MainCharacter.transform.position.x;        
+        float MainCharacterCurrentPos = MainCharacter.transform.position.x;
 
-        if(Input.GetKeyDown(KeyCode.Space))
+
+        //Main Stage Loop
+        if (uiAnimControl.AnimationActive)
+            return;
+
+
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             TruthTable();
         }
 
-        //Main Stage Loop
-        if (AnimationFinished == false)
-        {
-            Debug.Log("Animation Not Complete");
-        }
-        else if (b_Stage1)
+        if (b_Stage1)
         {
             UIControl.NewPlayerAnimation(CurrentPlayerString);
             //////////
@@ -507,6 +525,9 @@ public class playerController : MonoBehaviour {
         }
 
 
+
+     
+
         UpdateScores();
 
         //Exit Game
@@ -530,6 +551,4 @@ public class playerController : MonoBehaviour {
     {
         UIControl.UpdateScores(i_Player1Points, i_Player2Points, i_Player3Points, i_Player4Points);
     }
-
-
 }
