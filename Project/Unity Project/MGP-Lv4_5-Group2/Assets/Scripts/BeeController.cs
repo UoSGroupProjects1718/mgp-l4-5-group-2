@@ -38,21 +38,11 @@ public class BeeController : MonoBehaviour {
         if (col.gameObject.tag == "LevelEnd")
         {
             Debug.Log("END OF LEVEL");
-
-
-           // prefabText.text = "You Got Through The Level!!";
-
             Destroy(gameObject);
-
             EndLevel = true;
-
-            PlayerController.PlayerPassed = true;
-
-            
+            PlayerController.PlayerPassed = true;            
             PlayerController.AddPoints(100, PlayerController.currentPlayer.ToString());
             PlayerController.PlayersTurnSwitch();
-
-
         }
 
         if (col.gameObject.tag == "Ground")
@@ -61,8 +51,7 @@ public class BeeController : MonoBehaviour {
             UIControl.PlayerAnimatedText.text = PlayerController.currentPlayer.ToString() + " Failed";
             Debug.Log(UIControl.PlayerAnimatedText.text);
             //StartCoroutine(PlayerController.TurnSwitchTimer(3.0f));
-            Destroy(gameObject);
-            
+            Destroy(gameObject);            
             PlayerController.PlayersTurnSwitch();
         }
 
@@ -71,39 +60,22 @@ public class BeeController : MonoBehaviour {
         if (col.gameObject.tag == "Cherry")
         {
             Debug.Log("explosions");
-
             Vector3 playercurrentPos;
             Vector3 AddExplosion;
-
             Vector3 HazardOriginalLocation = col.collider.transform.position;
-
-
             Vector3 aimedDirection;
-
             float thrust = 1000.0f;
-
-
-
             aimedDirection = (PlayerController.transform.position - transform.position).normalized;
 
 
             //Add animation
-
-
-
-
-            // PlayerController.FlyingBeeObject.AddForce(aimedDirection * thrust);
-            //PlayerController.FlyingBeeObject.AddForceAtPosition((aimedDirection * thrust), HazardOriginalLocation);
+            
 
             Rigidbody.velocity = Vector3.zero;
-            Rigidbody.AddForce(aimedDirection * thrust, ForceMode2D.Impulse);
-             
+            Rigidbody.AddForce(aimedDirection * thrust, ForceMode2D.Impulse);             
             Destroy(col.collider.gameObject);
 
-            //playercontroller.playeronebee.addforceatposition(new vector2(1000000000000000, 1000000000000000), playercontroller.playeronebee.transform.position + new vector3(30, 0, 0), forcemode2d.impulse);
-            //cherry explodes and lauchs the bee in some direction
-            //playercontroller.playeronebee.addforce(vector2.down * 5000.0f + 2500.0f * playercontroller.playeronebee.velocity.normalized, forcemode2d.impulse);
-
+   
 
         }
 
